@@ -1,23 +1,23 @@
 #
 using Plots
-using CurveFit, Statistics
+using CurveFit, Statistics, CPUTime
 include("Functions.jl")
 #
 #
 ############################### Test parameters ########################################
 #
 #
-verbose_option = [true ; false][1]
+verbose_option = [true ; false][2]
 #
 x_length = 1.
 y_length = 1.
 z_length = 1.
 #
 filling = 0.8#0.95
-n_array = [10, 20,  40 , 60 ,80, 100]#; 300]#; 1000]
+n_array = [10, 20,  40 , 60 ,80, 100, 200]#; 1000]
 #
-n_repetitions = 1000
-max_time = 300#180
+n_repetitions = 200#100000
+max_time = 3000#180
 #
 #
 ############################### Initializing elements ########################################
@@ -27,6 +27,7 @@ n_length = length(n_array)
 cube_values = (x_length,y_length,z_length)
 distance_func = (xx-> ((x_length*y_length*z_length/xx)^(1/3))*filling)
 distance_array = distance_func.(n_array)
+length(ARGS)>=2 ? args_checked=ARGS[:] : args_checked=["_DEFAULT" ; ""]
 #
 #
 exit_array_joint = [true for i in 1:n_length]
@@ -57,9 +58,8 @@ sample_sphere_smart(n_array[1], distance_array[1], euclidean_distance, x->(regio
 ############################### Testing the algorithms ########################################
 #
 #
-if verbose_option
-    println("The number of repetitions is ", n_repetitions)
-end
+println("The number of repetitions is ", n_repetitions,".\nThe filling fraction is ", filling,".\nThe number of points is ", n_array )
+flush(stdout)
 #
 #
 for i_main in 1:length(n_array)
@@ -76,17 +76,17 @@ for i_main in 1:length(n_array)
         end
         #
         #
-        time_start_joint = time()
+        CPUtic()
         sampled_array_joint_val, n_value_joint_val = sample_sphere_joint(n_main, distance_threshold, euclidean_distance , uniform_box, (x_length,y_length,z_length), max_time)
-        time_array_joint_list[i_main,i_rep] = time()-time_start_joint
+        time_array_joint_list[i_main,i_rep] = CPUtoq()
         #
-        time_start_single = time()
+        CPUtic()
         sampled_array_single_val, n_value_single_val = sample_sphere_single(n_main, distance_threshold, euclidean_distance , uniform_box, (x_length,y_length,z_length), max_time)
-        time_array_single_list[i_main,i_rep] = time()-time_start_single
+        time_array_single_list[i_main,i_rep] = CPUtoq()
         #
-        time_start_smart = time()
+        CPUtic()
         sampled_array_smart_val, n_value_smart_val = sample_sphere_smart(n_main, distance_threshold, euclidean_distance, x->(region_shape_cube(x,cube_values)), cube_values, max_time)
-        time_array_smart_list[i_main,i_rep] = time()-time_start_smart
+        time_array_smart_list[i_main,i_rep] = CPUtoq()
         #
         #Testing the joint code
         errors_joint = 0
@@ -149,13 +149,16 @@ end
 #
 #
 #Printing values
+println("")
 println("N values: ", n_array, ", repetitions: ",n_repetitions,", filling: ", filling)
 println("joint times: ", time_array_joint)
 println("         +/- ", time_array_joint_std)
 println("   (log) +/- ", time_array_joint_std_log)
+println("")
 println("single times: ", time_array_single)
 println("         +/- ", time_array_single_std)
 println("   (log) +/- ", time_array_single_std_log)
+println("")
 println("smart times: ", time_array_smart)
 println("         +/- ", time_array_smart_std)
 println("   (log) +/- ", time_array_smart_std_log)
@@ -178,3 +181,5 @@ plot!(log.(n_array[start_i_plot:end]), log.(time_array_single[start_i_plot:end])
 plot!(log.(n_array[start_i_plot:end]), log.(time_array_smart[start_i_plot:end]), label="smart", seriestype=:scatter, yerror=time_array_smart_std_log[start_i_plot:end])
 ylabel!("log(T)")
 xlabel!("log(N)")
+mkpath("Data")
+png("Data/plot_"*args_checked[1]*"_"*args_checked[2]*".png")
