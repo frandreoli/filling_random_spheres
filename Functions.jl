@@ -212,34 +212,6 @@ function sample_sphere_smart(n_start, distance_threshold, distance_function, reg
     grid_indices_availability  = Array{Bool}(undef, dim_points...)
     grid_indices_availability .= true
     #
-    #all_indices_list = (x->collect(1:x)).(dim_points)
-    #available_indices = (x->[true for i in 1:x]).(dim_points)
-    #
-    #print(available_indices)
-    #filled_indices = []
-    #
-    #i_list = sampled_point = Tuple(zeros(length(available_indices)))
-    #
-    #point_rejection = true
-    #time_condition = true
-    #time_start = time()
-    #while point_rejection && time_condition
-    #    i_list = rand.(all_indices_list)
-    #    sampled_point = ((i_list .- rand(dimensions)).*distance_threshold)
-    #    point_rejection = !region_shape_func(sampled_point)
-    #    time_condition = (time()-time_start)<=time_threshold
-   # end
-    #
-    #if !point_rejection
-    #    grid_points[i_list...,:] = sampled_point[:]
-    #    for dims in dimensions
-    #        (available_indices[dims])[i_list[dims]] = false
-    #        filled_indices[dims] .= push!(filled_indices[dims], i_list[dims])
-    #    end
-    #else
-    #    error("Problem in sampling the first point: run out of time.")
-    #end
-    #
     n_value = 0
     #
     #
