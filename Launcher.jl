@@ -61,6 +61,7 @@ sample_sphere_smart(n_array[1], distance_array[1], euclidean_distance, x->(regio
 println("The number of repetitions is ", n_repetitions,".\nThe filling fraction is ", filling,".\nThe number of points is ", n_array )
 flush(stdout)
 #
+time_start = time()
 #
 for i_main in 1:length(n_array)
     #
@@ -149,7 +150,7 @@ end
 #
 #
 #Printing values
-println("")
+println("\nEvaluation concluded in ", time()-time_start," seconds.\n")
 println("N values: ", n_array, ", repetitions: ",n_repetitions,", filling: ", filling)
 println("joint times: ", time_array_joint)
 println("         +/- ", time_array_joint_std)
@@ -181,5 +182,6 @@ plot!(log.(n_array[start_i_plot:end]), log.(time_array_single[start_i_plot:end])
 plot!(log.(n_array[start_i_plot:end]), log.(time_array_smart[start_i_plot:end]), label="smart", seriestype=:scatter, yerror=time_array_smart_std_log[start_i_plot:end])
 ylabel!("log(T)")
 xlabel!("log(N)")
+title!("Filling at "*string(filling)*" and "*string(n_repetitions)*" repetitions")
 mkpath("Data")
-png("Data/plot_"*args_checked[1]*"_"*args_checked[2]*".png")
+png("Data/fill"*string(filling)*"_rep"*string(n_repetitions)*"_"*args_checked[1]*"_"*args_checked[2]*".png")
