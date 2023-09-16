@@ -15,7 +15,7 @@ y_length = 1.
 z_length = 1.
 #
 filling = 0.8#0.95
-n_array = ceil.(Int, 10.0.^[1.4;1.5;1.6;1.7;1.8;1.9;2;2.1;2.2;2.3])#[ 40 , 60 ,80, 100, 200]#; 1000]
+n_array = ceil.(Int, 10.0.^[1.6;1.7;1.8;1.9;2;2.1;2.2;2.3])#[ 40 , 60 ,80, 100, 200]#; 1000]
 #
 n_repetitions = 20#20000
 max_time = 3000#180
@@ -172,7 +172,7 @@ println("   (log) +/- ", dig_round.(time_array_smart_std_log))
 #
 #
 #Fitting the scaling
-start_i_fit = 2
+start_i_fit = 1
 fit_joint = linear_fit(log10.(n_array[start_i_fit:end]), log10.(time_array_joint[start_i_fit:end]))
 fit_single = linear_fit(log10.(n_array[start_i_fit:end]), log10.(time_array_single[start_i_fit:end]))
 fit_smart = linear_fit(log10.(n_array[start_i_fit:end]), log10.(time_array_smart[start_i_fit:end]))
@@ -183,7 +183,7 @@ println("fit_smart = ", fit_smart)
 #
 #
 #Final plot
-start_i_plot = 2
+start_i_plot = 1
 plot( log10.(n_array[start_i_plot:end]),  log10.(time_array_joint[start_i_plot:end]), label="joint", seriestype=:scatter, yerror=time_array_joint_std_log[start_i_plot:end] )
 plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_single[start_i_plot:end]), label="single", seriestype=:scatter, yerror=time_array_single_std_log[start_i_plot:end] )
 plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_smart[start_i_plot:end]), label="smart", seriestype=:scatter, yerror=time_array_smart_std_log[start_i_plot:end] )
