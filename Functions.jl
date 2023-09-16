@@ -163,11 +163,6 @@ end
 ############################### Smart algorithm definitions ########################################
 #
 #
-function point_sample(n_value, distance, indices)
-    n_dims = length(indices)
-    return indices
-end
-#
 function region_shape_cube(vec, sizes)
     dims = length(sizes)
     valid = true
@@ -193,17 +188,25 @@ end
 #
 function sample_sphere_smart(n_start, distance_threshold, distance_function, region_shape_func, enclosing_cube::Tuple, time_threshold=60, print_option=false, check_option=false)
     #
-    #enclosing_cube = collect(enclosing_cube_start)
     #
     dimensions = length(enclosing_cube)
-    neighbour_list = collect(Iterators.product([(0,1,-1) for i in 1:dimensions]... ))[2:end]
+    #
+    neigh_order = [0]
+    for i in 1:ceil(Int,sqrt(dimensions))
+        push!(neigh_order,i)
+        push!(neigh_order,-i)
+    end
+    #
+    neighbour_list = collect(Iterators.product([neigh_order for i in 1:dimensions]... ))[2:end]
+    #
+    small_cube_size = distance_threshold/sqrt(dimensions)
     #
     function println_if(string...)
         print_option ? println(string...) : nothing
     end
     #
-    #
-    dim_points = (x->ceil(Int, x/distance_threshold)).(enclosing_cube)
+    #Construct small cubes where only one point is allowed to be
+    dim_points = (x->ceil(Int, x/small_cube_size)).(enclosing_cube)
     #
     grid_points  = Array{Float64}(undef, dim_points..., 3)
     grid_points .= 0.0
@@ -222,7 +225,7 @@ function sample_sphere_smart(n_start, distance_threshold, distance_function, reg
         while point_rejection && time_condition
             #
             i_list = rand((grid_indices_values[grid_indices_availability])[:])
-            sampled_point = (i_list .- rand(dimensions)).*distance_threshold
+            sampled_point = (i_list .- rand(dimensions)).*small_cube_size
             point_rejection = !region_shape_func(sampled_point)
             #
             if !point_rejection  
@@ -252,13 +255,13 @@ function sample_sphere_smart(n_start, distance_threshold, distance_function, reg
     correct_indices = (grid_indices_values[.!grid_indices_availability])[:]
     #
     if !time_condition
-        @warn "Exceeded computation_value time (joint). Number of points correctly sampled: "*string(n_value)
+        @warn "Exceeded computation_value time (smart). Number of points correctly sampled: "*string(n_value)
     else
         length(correct_indices[:]) != n_start || n_value!=n_start ? error("Wrong amount of sampled spheres.") : nothing
     end
     #    
-    sampled_array = Array{Float64}(undef, n_start, 3)
-    for i in 1:n_start
+    sampled_array = Array{Float64}(undef, n_value, 3)
+    for i in 1:n_value
         sampled_array[i,:] = grid_points[correct_indices[i]...,:]
     end
     #
@@ -266,8 +269,8 @@ function sample_sphere_smart(n_start, distance_threshold, distance_function, reg
     if check_option
         remain=0
         println_if("Starting consistency check.")
-        for i = 1:n_start
-            for j = (i + 1):n_start 
+        for i = 1:n_value
+            for j = (i + 1):n_value 
                 if euclidean_distance(sampled_array[i,:]-sampled_array[j,:])<distance_threshold
                     remain+=1
                     println_if("Exception at: ", sampled_array[i,:], " and ", sampled_array[j,:])

@@ -14,11 +14,11 @@ x_length = 1.
 y_length = 1.
 z_length = 1.
 #
-filling = 0.8#0.95
-n_array = ceil.(Int, 10.0.^[1.6;1.7;1.8;1.9;2;2.1;2.2;2.3])#[ 40 , 60 ,80, 100, 200]#; 1000]
+filling_ratio = 0.6#0.95
+n_array = ceil.(Int, 10.0.^[ 1.7;1.8; 1.9 ; 2; 2.1 ; 2.2; 2.3;2.4 ])#[ 40 , 60 ,80, 100, 200]#; 1000]
 #
-n_repetitions = 20#20000
-max_time = 3000#180
+n_repetitions = 100#20000
+max_time = 30#180
 #
 #
 ############################### Initializing elements ########################################
@@ -26,7 +26,12 @@ max_time = 3000#180
 #
 n_length = length(n_array)
 cube_values = (x_length,y_length,z_length)
-distance_func = (xx-> ((x_length*y_length*z_length/xx)^(1/3))*filling)
+#distance_func = (xx-> ((x_length*y_length*z_length/xx)^(1/3))*filling_ratio)
+#
+#max_filling = pi/(3*sqrt(2))
+#distance_func = (nn-> 2*((filling_ratio*max_filling*x_length*y_length*z_length / (4*nn*pi/3))^(1/3)) )
+distance_func = (xx-> ((x_length*y_length*z_length/xx)^(1/3))*filling_ratio)
+#
 distance_array = distance_func.(n_array)
 length(ARGS)>=2 ? args_checked=ARGS[:] : args_checked=["_DEFAULT" ; ""]
 #
@@ -51,15 +56,15 @@ time_array_joint_list = zeros(n_length,n_repetitions)
 time_array_single_list = zeros(n_length,n_repetitions)
 time_array_smart_list = zeros(n_length,n_repetitions)
 #
-sample_sphere_joint(n_array[1], distance_array[1], euclidean_distance , uniform_box, cube_values, max_time, false, true)
-sample_sphere_single(n_array[1], distance_array[1], euclidean_distance , uniform_box, cube_values, max_time, false, true)
-sample_sphere_smart(n_array[1], distance_array[1], euclidean_distance, x->(region_shape_cube(x,cube_values)), cube_values, max_time, false, true)
+@time sample_sphere_joint(n_array[1], distance_array[1], euclidean_distance , uniform_box, cube_values, 5, false, true)
+@time sample_sphere_single(n_array[1], distance_array[1], euclidean_distance , uniform_box, cube_values, 5, false, true)
+@time sample_sphere_smart(n_array[1], distance_array[1], euclidean_distance, x->(region_shape_cube(x,cube_values)), cube_values,5, false, true)
 #
 #
 ############################### Testing the algorithms ########################################
 #
 #
-println("The number of repetitions is ", n_repetitions,".\nThe filling fraction is ", filling,".\nThe number of points is ", n_array )
+println("The number of repetitions is ", n_repetitions,".\nThe filling fraction is ", filling_ratio,".\nThe number of points is ", n_array )
 flush(stdout)
 #
 time_start = time()
@@ -155,7 +160,7 @@ end
 dig_round = x-> round(x; digits=4)
 #
 println("\nEvaluation concluded in ", time()-time_start," seconds.\n")
-println("N values: ", n_array, ", repetitions: ",n_repetitions,", filling: ", filling)
+println("N values: ", n_array, ", repetitions: ",n_repetitions,", filling: ", filling_ratio)
 println("joint times: ", dig_round.(time_array_joint))
 println("         +/- ", dig_round.(time_array_joint_std))
 println("   (log) +/- ", dig_round.(time_array_joint_std_log))
@@ -172,10 +177,17 @@ println("   (log) +/- ", dig_round.(time_array_smart_std_log))
 #
 #
 #Fitting the scaling
-start_i_fit = 1
-fit_joint = linear_fit(log10.(n_array[start_i_fit:end]), log10.(time_array_joint[start_i_fit:end]))
-fit_single = linear_fit(log10.(n_array[start_i_fit:end]), log10.(time_array_single[start_i_fit:end]))
-fit_smart = linear_fit(log10.(n_array[start_i_fit:end]), log10.(time_array_smart[start_i_fit:end]))
+start_i_fit = 2
+#
+pure_index_joint = (x->time_array_joint[x]!=0.0&&x>=start_i_fit).(1:length(n_array))
+fit_joint = linear_fit(log10.(n_array[pure_index_joint]), log10.(time_array_joint[pure_index_joint]))
+#
+pure_index_single = (x->time_array_single[x]!=0.0&&x>=start_i_fit).(1:length(n_array))
+fit_single = linear_fit(log10.(n_array[pure_index_single]), log10.(time_array_single[pure_index_single]))
+#
+pure_index_smart = (x->time_array_joint[x]!=0.0&&x>=start_i_fit).(1:length(n_array))
+fit_smart = linear_fit(log10.(n_array[pure_index_smart]), log10.(time_array_smart[pure_index_smart]))
+#
 println("")
 println("fit_joint = ", fit_joint)
 println("fit_single = ", fit_single)
@@ -183,13 +195,13 @@ println("fit_smart = ", fit_smart)
 #
 #
 #Final plot
-start_i_plot = 1
-plot( log10.(n_array[start_i_plot:end]),  log10.(time_array_joint[start_i_plot:end]), label="joint", seriestype=:scatter, yerror=time_array_joint_std_log[start_i_plot:end] )
-plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_single[start_i_plot:end]), label="single", seriestype=:scatter, yerror=time_array_single_std_log[start_i_plot:end] )
-plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_smart[start_i_plot:end]), label="smart", seriestype=:scatter, yerror=time_array_smart_std_log[start_i_plot:end] )
+start_i_plot = 2
+plot( log10.(n_array[start_i_plot:end]),  log10.(time_array_joint[start_i_plot:end]), label="joint", seriestype=:scatter, framestyle = :box)#, yerror=time_array_joint_std_log[start_i_plot:end] )
+plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_single[start_i_plot:end]), label="single", seriestype=:scatter, framestyle = :box)#, yerror=time_array_single_std_log[start_i_plot:end] )
+plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_smart[start_i_plot:end]), label="smart", seriestype=:scatter, framestyle = :box)#, yerror=time_array_smart_std_log[start_i_plot:end] )
 ylabel!(L"log_{10}(\mathrm{CPU}\;\mathrm{time})")
 xlabel!(L"log_{10}(\mathrm{N}\;\mathrm{spheres})")
-title!("Filling at "*string(filling)*" with "*string(n_repetitions)*" repetitions")
+title!("Filling ratio: "*string(filling_ratio)*", repetitions: "*string(n_repetitions))
 mkpath("Data")
-png("Data/fill"*string(filling)*"_rep"*string(n_repetitions)*"_"*args_checked[1]*"_"*args_checked[2]*".png")
+png("Data/fill"*string(filling_ratio)*"_rep"*string(n_repetitions)*"_"*args_checked[1]*"_"*args_checked[2]*".png")
 plot!()
