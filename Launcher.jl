@@ -1,7 +1,8 @@
 #
 using Plots
-using CurveFit, Statistics, CPUTime
+using CurveFit, Statistics, CPUTime, LaTeXStrings
 include("Functions.jl")
+ENV["GKSwstype"]="nul"
 #
 #
 ############################### Test parameters ########################################
@@ -14,9 +15,9 @@ y_length = 1.
 z_length = 1.
 #
 filling = 0.8#0.95
-n_array = [10, 20,  40 , 60 ,80, 100, 200]#; 1000]
+n_array = ceil.(Int, 10.0.^[1.4;1.5;1.6;1.7;1.8;1.9;2;2.1;2.2;2.3])#[ 40 , 60 ,80, 100, 200]#; 1000]
 #
-n_repetitions = 200#100000
+n_repetitions = 20#20000
 max_time = 3000#180
 #
 #
@@ -150,26 +151,32 @@ end
 #
 #
 #Printing values
+#
+dig_round = x-> round(x; digits=4)
+#
 println("\nEvaluation concluded in ", time()-time_start," seconds.\n")
 println("N values: ", n_array, ", repetitions: ",n_repetitions,", filling: ", filling)
-println("joint times: ", time_array_joint)
-println("         +/- ", time_array_joint_std)
-println("   (log) +/- ", time_array_joint_std_log)
+println("joint times: ", dig_round.(time_array_joint))
+println("         +/- ", dig_round.(time_array_joint_std))
+println("   (log) +/- ", dig_round.(time_array_joint_std_log))
 println("")
-println("single times: ", time_array_single)
-println("         +/- ", time_array_single_std)
-println("   (log) +/- ", time_array_single_std_log)
+println("single times: ", dig_round.(time_array_single))
+println("         +/- ", dig_round.(time_array_single_std))
+println("   (log) +/- ", dig_round.(time_array_single_std_log))
 println("")
-println("smart times: ", time_array_smart)
-println("         +/- ", time_array_smart_std)
-println("   (log) +/- ", time_array_smart_std_log)
+println("smart times: ", dig_round.(time_array_smart))
+println("         +/- ", dig_round.(time_array_smart_std))
+println("   (log) +/- ", dig_round.(time_array_smart_std_log))
+#
+#
 #
 #
 #Fitting the scaling
 start_i_fit = 2
-fit_joint = linear_fit(log.(n_array[start_i_fit:end]), log.(time_array_joint[start_i_fit:end]))
-fit_single = linear_fit(log.(n_array[start_i_fit:end]), log.(time_array_single[start_i_fit:end]))
-fit_smart = linear_fit(log.(n_array[start_i_fit:end]), log.(time_array_smart[start_i_fit:end]))
+fit_joint = linear_fit(log10.(n_array[start_i_fit:end]), log10.(time_array_joint[start_i_fit:end]))
+fit_single = linear_fit(log10.(n_array[start_i_fit:end]), log10.(time_array_single[start_i_fit:end]))
+fit_smart = linear_fit(log10.(n_array[start_i_fit:end]), log10.(time_array_smart[start_i_fit:end]))
+println("")
 println("fit_joint = ", fit_joint)
 println("fit_single = ", fit_single)
 println("fit_smart = ", fit_smart)
@@ -177,11 +184,12 @@ println("fit_smart = ", fit_smart)
 #
 #Final plot
 start_i_plot = 2
-plot(log.(n_array[start_i_plot:end]), log.(time_array_joint[start_i_plot:end]), label="joint", seriestype=:scatter, yerror=time_array_joint_std_log[start_i_plot:end])
-plot!(log.(n_array[start_i_plot:end]), log.(time_array_single[start_i_plot:end]), label="single", seriestype=:scatter, yerror=time_array_single_std_log[start_i_plot:end])
-plot!(log.(n_array[start_i_plot:end]), log.(time_array_smart[start_i_plot:end]), label="smart", seriestype=:scatter, yerror=time_array_smart_std_log[start_i_plot:end])
-ylabel!("log(T)")
-xlabel!("log(N)")
-title!("Filling at "*string(filling)*" and "*string(n_repetitions)*" repetitions")
+plot( log10.(n_array[start_i_plot:end]),  log10.(time_array_joint[start_i_plot:end]), label="joint", seriestype=:scatter, yerror=time_array_joint_std_log[start_i_plot:end] )
+plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_single[start_i_plot:end]), label="single", seriestype=:scatter, yerror=time_array_single_std_log[start_i_plot:end] )
+plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_smart[start_i_plot:end]), label="smart", seriestype=:scatter, yerror=time_array_smart_std_log[start_i_plot:end] )
+ylabel!(L"log_{10}(\mathrm{CPU}\;\mathrm{time})")
+xlabel!(L"log_{10}(\mathrm{N}\;\mathrm{spheres})")
+title!("Filling at "*string(filling)*" with "*string(n_repetitions)*" repetitions")
 mkpath("Data")
 png("Data/fill"*string(filling)*"_rep"*string(n_repetitions)*"_"*args_checked[1]*"_"*args_checked[2]*".png")
+plot!()
