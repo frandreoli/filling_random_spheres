@@ -186,24 +186,36 @@ function valid_neighbour(i_neigh,dim_points )
     return valid
 end
 #
-function sample_sphere_smart(n_start, distance_threshold, distance_function, region_shape_func, enclosing_cube::Tuple, time_threshold=60, print_option=false, check_option=false)
+function sample_sphere_smart(n_start, distance_threshold, distance_function, region_shape_func, enclosing_cube::Tuple, time_threshold=60, print_option=false, check_option=false ; approx=false, approx_eff = false )
     #
-    #
-    dimensions = length(enclosing_cube)
-    #
-    neigh_order = [0]
-    for i in 1:ceil(Int,sqrt(dimensions))
-        push!(neigh_order,i)
-        push!(neigh_order,-i)
-    end
-    #
-    neighbour_list = collect(Iterators.product([neigh_order for i in 1:dimensions]... ))[2:end]
-    #
-    small_cube_size = distance_threshold/sqrt(dimensions)
     #
     function println_if(string...)
         print_option ? println(string...) : nothing
     end
+    #
+    dimensions = length(enclosing_cube)
+    #
+    if approx
+        neigh_order = [0;-1;1]
+        small_cube_size = distance_threshold
+        if approx_eff
+            n_tests = 50000
+            approx_eff_values = [Int(sqrt(sum((rand(dimensions).-rand(dimensions)).^2))<1) for ii in 1:n_tests]
+            approx_eff_mean = mean(approx_eff_values)
+            println("-- The efficiency of the approximation is: ", approx_eff_mean)
+            flush(stdout)
+        end
+    else
+        neigh_order = [0]
+        for i in 1:ceil(Int,sqrt(dimensions))
+            push!(neigh_order,i)
+            push!(neigh_order,-i)
+        end
+        small_cube_size = distance_threshold/sqrt(dimensions)
+    end
+    #
+    neighbour_list = collect(Iterators.product([neigh_order for i in 1:dimensions]... ))[2:end]
+
     #
     #Construct small cubes where only one point is allowed to be
     dim_points = (x->ceil(Int, x/small_cube_size)).(enclosing_cube)

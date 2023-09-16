@@ -20,6 +20,7 @@ n_array = ceil.(Int, 10.0.^[ 1.7;1.8; 1.9 ; 2; 2.1 ; 2.2; 2.3;2.4 ])#[ 40 , 60 ,
 n_repetitions = 100#20000
 max_time = 30#180
 #
+approx_option = true
 #
 ############################### Initializing elements ########################################
 #
@@ -58,13 +59,14 @@ time_array_smart_list = zeros(n_length,n_repetitions)
 #
 @time sample_sphere_joint(n_array[1], distance_array[1], euclidean_distance , uniform_box, cube_values, 5, false, true)
 @time sample_sphere_single(n_array[1], distance_array[1], euclidean_distance , uniform_box, cube_values, 5, false, true)
-@time sample_sphere_smart(n_array[1], distance_array[1], euclidean_distance, x->(region_shape_cube(x,cube_values)), cube_values,5, false, true)
+@time sample_sphere_smart(n_array[1], distance_array[1], euclidean_distance, x->(region_shape_cube(x,cube_values)), cube_values,5, false, true ; approx=approx_option, approx_eff = approx_option)
 #
 #
 ############################### Testing the algorithms ########################################
 #
 #
 println("The number of repetitions is ", n_repetitions,".\nThe filling fraction is ", filling_ratio,".\nThe number of points is ", n_array )
+println("The approximation option is ",  approx_option)
 flush(stdout)
 #
 time_start = time()
@@ -92,7 +94,7 @@ for i_main in 1:length(n_array)
         time_array_single_list[i_main,i_rep] = CPUtoq()
         #
         CPUtic()
-        sampled_array_smart_val, n_value_smart_val = sample_sphere_smart(n_main, distance_threshold, euclidean_distance, x->(region_shape_cube(x,cube_values)), cube_values, max_time)
+        sampled_array_smart_val, n_value_smart_val = sample_sphere_smart(n_main, distance_threshold, euclidean_distance, x->(region_shape_cube(x,cube_values)), cube_values, max_time; approx=approx_option)
         time_array_smart_list[i_main,i_rep] = CPUtoq()
         #
         #Testing the joint code
@@ -194,6 +196,12 @@ println("fit_single = ", fit_single)
 println("fit_smart = ", fit_smart)
 #
 #
+if approx_option
+    approx_string = ", approx."
+else
+    approx_string = ""
+end
+#
 #Final plot
 start_i_plot = 2
 plot( log10.(n_array[start_i_plot:end]),  log10.(time_array_joint[start_i_plot:end]), label="joint", seriestype=:scatter, framestyle = :box)#, yerror=time_array_joint_std_log[start_i_plot:end] )
@@ -201,7 +209,7 @@ plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_single[start_i_plot
 plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_smart[start_i_plot:end]), label="smart", seriestype=:scatter, framestyle = :box)#, yerror=time_array_smart_std_log[start_i_plot:end] )
 ylabel!(L"log_{10}(\mathrm{CPU}\;\mathrm{time})")
 xlabel!(L"log_{10}(\mathrm{N}\;\mathrm{spheres})")
-title!("Filling ratio: "*string(filling_ratio)*", repetitions: "*string(n_repetitions))
+title!("Filling ratio: "*string(filling_ratio)*", repetitions: "*string(n_repetitions)*approx_string)
 mkpath("Data")
 png("Data/fill"*string(filling_ratio)*"_rep"*string(n_repetitions)*"_"*args_checked[1]*"_"*args_checked[2]*".png")
 plot!()
