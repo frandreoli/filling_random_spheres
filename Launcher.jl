@@ -14,13 +14,14 @@ x_length = 1.
 y_length = 1.
 z_length = 1.
 #
-filling_ratio = 0.6#0.95
+filling_ratio = 0.8#0.95
 n_array = ceil.(Int, 10.0.^[ 1.7;1.8; 1.9 ; 2; 2.1 ; 2.2; 2.3;2.4 ])#[ 40 , 60 ,80, 100, 200]#; 1000]
 #
 n_repetitions = 100#20000
 max_time = 30#180
 #
-approx_option = true
+approx_option      = [true ; false][1]
+sphere_filling_def = [true ; false][2]
 #
 ############################### Initializing elements ########################################
 #
@@ -29,9 +30,12 @@ n_length = length(n_array)
 cube_values = (x_length,y_length,z_length)
 #distance_func = (xx-> ((x_length*y_length*z_length/xx)^(1/3))*filling_ratio)
 #
-#max_filling = pi/(3*sqrt(2))
-#distance_func = (nn-> 2*((filling_ratio*max_filling*x_length*y_length*z_length / (4*nn*pi/3))^(1/3)) )
-distance_func = (xx-> ((x_length*y_length*z_length/xx)^(1/3))*filling_ratio)
+if sphere_filling_def
+    max_filling = pi/(3*sqrt(2))
+    distance_func = (nn-> 2*((filling_ratio*max_filling*x_length*y_length*z_length / (4*nn*pi/3))^(1/3)) )
+else
+    distance_func = (xx-> ((x_length*y_length*z_length/xx)^(1/3))*filling_ratio)
+end
 #
 distance_array = distance_func.(n_array)
 length(ARGS)>=2 ? args_checked=ARGS[:] : args_checked=["_DEFAULT" ; ""]
@@ -67,6 +71,7 @@ time_array_smart_list = zeros(n_length,n_repetitions)
 #
 println("The number of repetitions is ", n_repetitions,".\nThe filling fraction is ", filling_ratio,".\nThe number of points is ", n_array )
 println("The approximation option is ",  approx_option)
+println("The filling factor is defined from the sphere volume? ", sphere_filling_def)
 flush(stdout)
 #
 time_start = time()
