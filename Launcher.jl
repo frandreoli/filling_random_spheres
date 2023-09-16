@@ -14,14 +14,14 @@ x_length = 1.
 y_length = 1.
 z_length = 1.
 #
-filling_ratio = 0.8#0.95
+filling_ratio = 0.05#0.95
 n_array = ceil.(Int, 10.0.^[ 1.7;1.8; 1.9 ; 2; 2.1 ; 2.2; 2.3;2.4 ])#[ 40 , 60 ,80, 100, 200]#; 1000]
 #
-n_repetitions = 100#20000
+n_repetitions = 10000#20000
 max_time = 30#180
 #
-approx_option      = [true ; false][1]
-sphere_filling_def = [true ; false][2]
+approx_option      = [true ; false][2]
+sphere_filling_def = [true ; false][1]
 #
 ############################### Initializing elements ########################################
 #
