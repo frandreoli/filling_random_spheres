@@ -105,7 +105,7 @@ end
 ############################### Single algorithm definitions ########################################
 #
 #
-function sample_sphere_single(n_start, distance_threshold, distance_function , sampling_function, sampling_options, time_threshold=60, print_option=false, check_option=false)
+function sample_sphere_basic(n_start, distance_threshold, distance_function , sampling_function, sampling_options, time_threshold=60, print_option=false, check_option=false)
     #
     function println_if(string...)
         print_option ? println(string...) : nothing
@@ -186,7 +186,7 @@ function valid_neighbour(i_neigh,dim_points )
     return valid
 end
 #
-function sample_sphere_smart(n_start, distance_threshold, distance_function, region_shape_func, enclosing_cube::Tuple, time_threshold=60, print_option=false, check_option=false ; approx=false, approx_eff = false )
+function sample_sphere_grid(n_start, distance_threshold, distance_function, region_shape_func, enclosing_cube::Tuple, time_threshold=60, print_option=false, check_option=false ; approx=false, approx_eff = false )
     #
     #
     function println_if(string...)
