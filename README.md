@@ -15,10 +15,15 @@ Hereafter, we suppose that the hard spheres are $N\_{\text{spheres}}$ have radiu
 # Scaling example
 Here, we provide an example of the performance of the three algorithms in 3D. To this aim, we fix the enclosing shape to be a cubic box of sizes $L_{\text{tot}}=1$ and we define the filling fraction $f$ (or packing density) as 
 
-$$f=\left(\dfrac{1}{f\_{\text{max}}}\right)\dfrac{ V\_{\text{spheres}}N}{ V\_{\text{tot}}} = \left(\dfrac{1}{f\_{\text{max}}}\right)\dfrac{ 4\pi R\_{\text{spheres}}^3N}{ 3 L_{\text{tot}}^3}, $$
+$$f= \dfrac{ V\_{\text{spheres}}N}{ V\_{\text{tot}}} =  \dfrac{ 4\pi R\_{\text{spheres}}^3N}{ 3 L_{\text{tot}}^3}. $$
 
-where $f\_{\text{max}} = \pi/(3\sqrt{2})\simeq 0.74$ is the maximum packing density in 3D according to the Kepler conjecture (see [Sphere Packing Problem](https://mathworld.wolfram.com/SpherePacking.html)). 
+According to the Kepler conjecture (see [Sphere Packing Problem](https://mathworld.wolfram.com/SpherePacking.html)), the maximum packing density in 3D is $f\_{\text{max}} = \pi/(3\sqrt{2})\simeq 0.74$. 
 
+Here below we show the scaling results when fixing $f=0.4f\_{\text{max}}$. We tested the CPU time spent on the code by averaging over $\sim 20000$ repetitions, and spanning values of $10\lesssim N\_{\text{spheres}}\lesssim 1000$. We found the empirical scalings:
+
+- _Basic_ algorithm: $\langle T \rangle \sim N\_{\text{spheres}}^{2.3}$.
+- _Grid_ algorithm: $\langle T \rangle \sim N\_{\text{spheres}}^{1.8}$.
+- _Grid, approximated_ algorithm: $\langle T \rangle \sim N\_{\text{spheres}}^{1.5}$.
 
 
 <p align="center">
