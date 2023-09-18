@@ -7,4 +7,4 @@ In this repository, few algorithms are dicussed to uniformly sample hard (non-ov
 
 # Scaling examples
 
-# Kolmorogov-Smirnov test against the uniform distribution
+# Kolmorogov-Smirnov test
