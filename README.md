@@ -5,7 +5,7 @@ Hereafter, we suppose that the hard spheres are $N$ have radius $R$, and that we
 
 - **Basic algorithm.** The most basic algorithm (hereafter labeled as **_basic_**) is defined as follows. At each step $1\leq i\leq N$ a set of coordinates $\mathbf{r}\_i$ for the _i_-th point is uniformly sampled inside the chosen enclosing shape (the standard shape tested here is a cuboid). If the distance condition $|\mathbf{r}\_j-\mathbf{r}\_i|\geq 2R$ is satisfied for all the previous $j=1, 2, \dots, i-1$ points, then the new point is accepted, otherwise rejected.
  
-<!--- - Second, we tested another possible approach (hereafter labeled as **_joint_**), where a set of $N$ coordinates is directly sampled from the beginning. Then,---\geq
+<!--- - Second, we tested another possible approach (hereafter labeled as **_joint_**), where a set of $N$ coordinates is directly sampled from the beginning. Then,--->
 
 - **Grid-based (exact) algorithm.** A more efficient algorithm (hereafter labeled as **_grid_**) is developed as follows. It is based on the idea of dividing the enclosing volume into small cubes of size $d$, to form a $D$-dimensional grid. For a generic case (such as a generic cuboid), we encapsulate the enclosing shape into a larger grid, and then at each step we reject the new point if this lays outside the target shape. The grid constant $d=2R \sqrt{D}$ is chosen in such a way that two distinct points (i.e. the centers of two hard spheres) cannot be inside the same cube, as they would necessarily overlap. At each step _i_ of the code, the algorithm proposes a new point by first randomly choosing one among the (empty) cells of the grid, and then uniformly sampling a countinuous coordinate $\mathbf{r}\_i$ inside this latter. To accept the point, the algorithm checks its distance $|\mathbf{r}\_j-\mathbf{r}\_i|\geq 2R$ from the points $j$ that occupy the neighbouring cubes, rather than from all the accepted points. To this aim, the cubes are considered neighbouring up to the $m$-th neighbouring order, where `m=ceil(Int, sqrt(D))`.
 
@@ -27,9 +27,9 @@ Here below we show the scaling results when fixing $f=0.4f\_{\text{max}}$. We te
 
 ___
 
-<p align="center"\geq
- <img width="500" height="333" src="https://github.com/frandreoli/filling_random_spheres/assets/37184096/5333ca50-a968-4be8-9c0b-171d67a3cfe9"\geq
-</p\geq
+<p align="center">
+ <img width="500" height="333" src="https://github.com/frandreoli/filling_random_spheres/assets/37184096/5333ca50-a968-4be8-9c0b-171d67a3cfe9">
+</p>
 
   
 
@@ -37,11 +37,11 @@ ___
 <!---  
 ---
 ![git_0 4_test](https://github.com/frandreoli/filling_random_spheres/assets/37184096/5333ca50-a968-4be8-9c0b-171d67a3cfe9) 
-<p align="center"\geq
-  <em\geqFig. 1: Scaling of the three algorithms, given f=0.4.</em\geq
- <span class="math display"\geq\[y = \frac{a}{b} + c^2 + d\]</span\geq
+<p align="center">
+  <em\geqFig. 1: Scaling of the three algorithms, given f=0.4.</em>
+ <span class="math display"\geq\[y = \frac{a}{b} + c^2 + d\]</span>
 </p\geq
----\geq
+--->
 
  
 
