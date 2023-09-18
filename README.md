@@ -21,11 +21,11 @@ where $f\_{\text{max}} = \pi/(3\sqrt{2})\simeq 0.74$ is the maximum packing dens
 
 
 <p align="center">
-  <img width="460" height="300" src="https://github.com/frandreoli/filling_random_spheres/assets/37184096/5333ca50-a968-4be8-9c0b-171d67a3cfe9">
+  <img width="600" height="400" src="https://github.com/frandreoli/filling_random_spheres/assets/37184096/5333ca50-a968-4be8-9c0b-171d67a3cfe9">
 </p>
 
 
-![git_0 4_test](https://github.com/frandreoli/filling_random_spheres/assets/37184096/5333ca50-a968-4be8-9c0b-171d67a3cfe9)
+<!--- ![git_0 4_test](https://github.com/frandreoli/filling_random_spheres/assets/37184096/5333ca50-a968-4be8-9c0b-171d67a3cfe9) --->
 
 
 # Kolmorogov-Smirnov tests
