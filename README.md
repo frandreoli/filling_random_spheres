@@ -15,6 +15,6 @@ Hereafter, we suppose that the hard spheres are $N\_{\text{spheres}}$ have radiu
 # Scaling example
 Here, we provide an example of the performance of the three algorithms. To this aim, fixed the enclosing shape to be a cubic box of sizes $L_{\text{tot}}=1$ and defined the filling fraction $f$ as 
 
-$$f=\dfrac{1}{f\_{\text{max}}}\dfrac{V\_{\text{tot}}}{N V\_{\text{spheres}}} = \dfrac{1}{f\_{\text{max}}}\dfrac{L_{\text{tot}}^3}{N 4\pi R\_{\text{spheres}}^3/3} $$
+$$f=\left(\dfrac{1}{f\_{\text{max}}}\right)\dfrac{N V\_{\text{spheres}}}{ V\_{\text{tot}}} = \left(\dfrac{1}{f\_{\text{max}}}\right)\dfrac{N 4\pi R\_{\text{spheres}}^3}{ 3 L_{\text{tot}}^3} $$
 
 # Kolmorogov-Smirnov tests
