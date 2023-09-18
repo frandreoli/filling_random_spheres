@@ -41,7 +41,7 @@ ___
   <em\geqFig. 1: Scaling of the three algorithms, given f=0.4.</em>
  <span class="math display"\geq\[y = \frac{a}{b} + c^2 + d\]</span>
 </p\geq
---->
+---> 
 
  
 
