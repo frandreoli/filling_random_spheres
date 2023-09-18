@@ -38,6 +38,8 @@ From the data of the previous example, we checked that all the accepted points c
 
 To estimate this, we perform a Kolmogorov-Smirnov test via the Julia package [HypothesisTests](https://juliastats.org/HypothesisTests.jl/stable/), to check the null hypothesis that the final sampled points come from the uniform distribution, against the alternative hypothesis that the sample is not drawn from such distribution. In the figure below, we show the $p$ values (averaged over the three dimensions and the various repetitions) corresponding to the three algorithms, for the data of the previous example. In all cases, the values are well above the usual confidence threshold of $p=0.05$, with no noticeable difference between the approximated and the exact methods.
 
+___
+
 <p align="center">
  <img width="500" height="333" src="https://github.com/frandreoli/filling_random_spheres/assets/37184096/c53dda9e-fa69-40bc-9fd3-f38ee0900e66">
 </p>
