@@ -15,7 +15,7 @@ y_length = 1.
 z_length = 1.
 #
 filling_ratio = 0.4
-n_array = ceil.(Int, 10.0.^[ 1.7;1.8; 1.9 ; 2; 2.1 ; 2.2; 2.3;2.4 ])
+n_array = ceil.(Int, 10.0.^[ 1.7;1.8; 1.9 ; 2; 2.1 ; 2.2; 2.3;2.4;2.5 ;2.6;2.7;2.8;2.9])
 #
 n_repetitions = 2#15000
 max_time = 40
@@ -216,10 +216,16 @@ start_i_plot = 2
 println("\nEvaluation concluded in ", time()-time_start," seconds.\n")
 println("N values: ", n_array, ", repetitions: ",n_repetitions,", filling: ", filling_ratio,"\n")
 #
+if sphere_filling_option
+    filling_string ="f"*L"_{\mathrm{max}}"
+else
+    filling_string=""
+end
+#
 plot()
 ylabel!(L"log_{10}(\mathrm{CPU}\;\mathrm{time})")
 xlabel!(L"log_{10}(\mathrm{N}\;\mathrm{spheres})")
-title!("Filling ratio: "*string(filling_ratio)*", repetitions: "*string(n_repetitions))
+title!("Filling: f = "*string(filling_ratio)*filling_string)#*", repetitions: "*string(n_repetitions))
 #
 if joint_code_option
     nice_out_print("joint", time_array_joint, time_array_joint_std, time_array_joint_std_log)
