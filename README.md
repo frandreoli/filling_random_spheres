@@ -13,8 +13,11 @@ Hereafter, we suppose that the hard spheres are $N\_{\text{spheres}}$ have radiu
 
 
 # Scaling example
-Here, we provide an example of the performance of the three algorithms. To this aim, fixed the enclosing shape to be a cubic box of sizes $L_{\text{tot}}=1$ and defined the filling fraction $f$ as 
+Here, we provide an example of the performance of the three algorithms in 3D. To this aim, we fix the enclosing shape to be a cubic box of sizes $L_{\text{tot}}=1$ and we define the filling fraction $f$ (or packing density) as 
 
-$$f=\left(\dfrac{1}{f\_{\text{max}}}\right)\dfrac{N V\_{\text{spheres}}}{ V\_{\text{tot}}} = \left(\dfrac{1}{f\_{\text{max}}}\right)\dfrac{N 4\pi R\_{\text{spheres}}^3}{ 3 L_{\text{tot}}^3} $$
+$$f=\left(\dfrac{1}{f\_{\text{max}}}\right)\dfrac{N V\_{\text{spheres}}}{ V\_{\text{tot}}} = \left(\dfrac{1}{f\_{\text{max}}}\right)\dfrac{N 4\pi R\_{\text{spheres}}^3}{ 3 L_{\text{tot}}^3}, $$
+
+where $f\_{\text{max}} = \pi/(3\sqrt{2})\simeq 0.74$ is the maximum packing density in 3D according to the Kepler conjecture (see [Sphere Packing Problem](https://mathworld.wolfram.com/SpherePacking.html)). 
+
 
 # Kolmorogov-Smirnov tests
