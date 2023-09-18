@@ -46,3 +46,6 @@ ___
  
 
 # Kolmorogov-Smirnov tests
+From the data of the previous example, we checked that all the accepted points correctly satisfied the condition $|\mathbf{r}\_j-\mathbf{r}\_i|\geq 2R$ in all the three algorithms. As a further test, we 
+
+
