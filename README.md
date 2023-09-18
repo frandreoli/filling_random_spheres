@@ -19,7 +19,7 @@ $$f=\left(\dfrac{1}{f\_{\text{max}}}\right)\dfrac{ V\_{\text{spheres}}N}{ V\_{\t
 
 where $f\_{\text{max}} = \pi/(3\sqrt{2})\simeq 0.74$ is the maximum packing density in 3D according to the Kepler conjecture (see [Sphere Packing Problem](https://mathworld.wolfram.com/SpherePacking.html)). 
 
----
+
 
 <p align="center">
  <img width="500" height="333" src="https://github.com/frandreoli/filling_random_spheres/assets/37184096/5333ca50-a968-4be8-9c0b-171d67a3cfe9">
@@ -29,6 +29,7 @@ where $f\_{\text{max}} = \pi/(3\sqrt{2})\simeq 0.74$ is the maximum packing dens
 
 
 <!--- 
+---
 ![git_0 4_test](https://github.com/frandreoli/filling_random_spheres/assets/37184096/5333ca50-a968-4be8-9c0b-171d67a3cfe9) 
 <p align="center">
   <em>Fig. 1: Scaling of the three algorithms, given f=0.4.</em>
