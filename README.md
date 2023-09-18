@@ -5,7 +5,7 @@ In this repository, few algorithms are dicussed to uniformly sample hard (non-ov
 
 <!--- - Second, we tested another possible approach (hereafter labeled as **_joint_**), where a set of $N$ coordinates is directly sampled from the beginning. Then,--->
 
-- A more efficient algorithm (hereafter labeled as **_grid_**) is developed as follows. We based it on the idea of dividing the enclosing volume into small cubes of size $L$, to form . For a generic enclosing volume (such as a generic cuboid), we first 
+- A more efficient algorithm (hereafter labeled as **_grid_**) is developed as follows. We based it on the idea of dividing the enclosing volume into small cubes of size $L$, to form . For a generic enclosing volume (such as a generic cuboid), we first  
 
 , this value is chosen in such a way $L=2R\sqrt{D}$ that two distinct points (i.e. the centers of the hard spheres) are forbidden to be inside the same cube, as they would overlap.   
 
