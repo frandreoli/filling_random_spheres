@@ -21,9 +21,9 @@ According to the Kepler conjecture (see [Sphere Packing Problem](https://mathwor
 
 Here below we show the scaling results when fixing $f=0.4f\_{\text{max}}$. We tested the CPU time spent on the code by averaging over $\sim 20000$ repetitions, and spanning values of $10\lesssim N \lesssim 1000$. We found the empirical scalings:
 
-- _Basic_ algorithm: $\langle T \rangle \sim N ^{2.3}$.
-- _Grid_ algorithm: $\langle T \rangle \sim N ^{1.8}$.
-- _Grid, approximated_ algorithm: $\langle T \rangle \sim N ^{1.5}$.
+- **_Basic_** algorithm: $\langle T \rangle \sim N ^{2.3}$.
+- **_Grid_** algorithm: $\langle T \rangle \sim N ^{1.8}$.
+- **_Grid, approximated_** algorithm: $\langle T \rangle \sim N ^{1.5}$.
 
 ___
 
@@ -46,6 +46,6 @@ ___
  
 
 # Kolmorogov-Smirnov tests
-From the data of the previous example, we checked that all the accepted points correctly satisfied the condition $|\mathbf{r}\_j-\mathbf{r}\_i|\geq 2R$ in all the three algorithms. As a further test, we 
+From the data of the previous example, we checked that all the accepted points correctly satisfied the condition $|\mathbf{r}\_j-\mathbf{r}\_i|\geq 2R$ in all the three algorithms. As a further test, we quantified how uniformly distributed the resulting points were. To this aim, one should take into account that the constraint on the mutual distance can introduce a strong correlations between the point, whose distribution then might significantly different from the uniform distribution. Nonetheless, we wanted to verify that the three algorithms returned consistent results with respect to each other. This is particularly interesting for the **_grid, approximated_** algorithm, to check if the intrinsic approximation produces some distinguishable differences in the outcome.
 
 
