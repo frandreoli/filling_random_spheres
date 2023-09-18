@@ -25,6 +25,7 @@ Here below we show the scaling results when fixing $f=0.4f\_{\text{max}}$. We te
 - _Grid_ algorithm: $\langle T \rangle \sim N ^{1.8}$.
 - _Grid, approximated_ algorithm: $\langle T \rangle \sim N ^{1.5}$.
 
+___
 
 <p align="center">
  <img width="500" height="333" src="https://github.com/frandreoli/filling_random_spheres/assets/37184096/5333ca50-a968-4be8-9c0b-171d67a3cfe9">
