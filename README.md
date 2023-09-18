@@ -28,24 +28,21 @@ Here below we show the scaling results when fixing $f=0.4f\_{\text{max}}$. We te
 ___
 
 <p align="center">
- <img width="500" height="333" src="https://github.com/frandreoli/filling_random_spheres/assets/37184096/5333ca50-a968-4be8-9c0b-171d67a3cfe9">
+ <img width="500" height="333" src="https://github.com/frandreoli/filling_random_spheres/assets/37184096/0564de99-f088-4812-a71e-0d8a2b57e1fd">
 </p>
 
-  
 
-
-<!---  
----
-![git_0 4_test](https://github.com/frandreoli/filling_random_spheres/assets/37184096/5333ca50-a968-4be8-9c0b-171d67a3cfe9) 
-<p align="center">
-  <em\geqFig. 1: Scaling of the three algorithms, given f=0.4.</em>
- <span class="math display"\geq\[y = \frac{a}{b} + c^2 + d\]</span>
-</p\geq
----> 
-
- 
 
 # Kolmorogov-Smirnov tests
 From the data of the previous example, we checked that all the accepted points correctly satisfied the condition $|\mathbf{r}\_j-\mathbf{r}\_i|\geq 2R$ in all the three algorithms. As a further test, we quantified how uniformly distributed the resulting points were. To this aim, one should take into account that the constraint on the mutual distance can introduce a strong correlations between the point, whose distribution then might significantly different from the uniform distribution. Nonetheless, we wanted to verify that the three algorithms returned consistent results with respect to each other. This is particularly interesting for the **_grid, approximated_** algorithm, to check if the intrinsic approximation produces some distinguishable differences in the outcome. 
+
+To estimate this, we perform a Kolmogorov-Smirnov test via the Julia package [HypothesisTests](https://juliastats.org/HypothesisTests.jl/stable/), to check the null hypothesis that the final sampled points come from the uniform distribution, against the alternative hypothesis that the sample is not drawn from such distribution. In the figure below, we show the $p$ values (averaged over the three dimensions and the various repetitions) corresponding to the three algorithms, for the data of the previous example. In all cases, the values are well above the usual confidence threshold of $p=0.05$, with no noticeable difference between the approximated and the exact methods.
+
+___
+
+<p align="center">
+ <img width="500" height="333" src="https://github.com/frandreoli/filling_random_spheres/assets/37184096/c53dda9e-fa69-40bc-9fd3-f38ee0900e66">
+</p>
+
 
 
