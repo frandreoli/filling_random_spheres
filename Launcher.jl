@@ -17,7 +17,7 @@ z_length = 1.
 filling_ratio = 0.4
 n_array = ceil.(Int, 10.0.^[ 1.7;1.8; 1.9 ; 2; 2.1 ; 2.2; 2.3;2.4;2.5 ;2.6;2.7;2.8;2.9])
 #
-n_repetitions = 2#15000
+n_repetitions = 100#15000
 max_time = 60
 #
 const sphere_filling_option   = [true ; false][1]
