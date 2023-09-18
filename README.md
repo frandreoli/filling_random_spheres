@@ -34,7 +34,7 @@ ___
   
 
 
-<!--- 
+<!---  
 ---
 ![git_0 4_test](https://github.com/frandreoli/filling_random_spheres/assets/37184096/5333ca50-a968-4be8-9c0b-171d67a3cfe9) 
 <p align="center">
