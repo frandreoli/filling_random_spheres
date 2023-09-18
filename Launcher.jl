@@ -17,7 +17,7 @@ z_length = 1.
 filling_ratio = 0.4
 n_array = ceil.(Int, 10.0.^[ 1.7;1.8; 1.9 ; 2; 2.1 ; 2.2; 2.3;2.4;2.5 ;2.6;2.7;2.8;2.9])
 #
-n_repetitions = 100#15000
+n_repetitions = 1#100#15000
 max_time = 60
 #
 const sphere_filling_option   = [true ; false][1]
@@ -25,7 +25,7 @@ const code_test_option        = [true ; false][1]
 const p_value_option          = [true ; false][1] 
 # 
 const basic_code_option       = [true ; false][1]
-const joint_code_option       = [true ; false][1]
+const joint_code_option       = [true ; false][2]
 const grid_code_option        = [true ; false][1]
 const grid_approx_code_option = [true ; false][1]
 #
@@ -168,7 +168,7 @@ for i_main in 1:length(n_array)
             CPUtic()
             sampled_array_basic_val, n_value_basic_val = sample_sphere_basic(n_main, distance_threshold, euclidean_distance , uniform_box, (x_length,y_length,z_length), max_time)
             time_array_basic_list[i_main,i_rep] = CPUtoq()
-            exit_array_basic[i_main] = test_results(euclidean_distance,sampled_array_basic_val, distance_threshold, "basic")
+            exit_array_basic[i_main] = test_results(euclidean_distance,sampled_array_basic_val, distance_threshold, "Basic")
             if p_value_option
                 p_value_basic_list[i_main,i_rep] = p_extract(sampled_array_basic_val)
             end
@@ -177,7 +177,7 @@ for i_main in 1:length(n_array)
             CPUtic()
             sampled_array_joint_val, n_value_joint_val = sample_sphere_joint(n_main, distance_threshold, euclidean_distance , uniform_box, (x_length,y_length,z_length), max_time)
             time_array_joint_list[i_main,i_rep] = CPUtoq()
-            exit_array_joint[i_main] = test_results(euclidean_distance,sampled_array_joint_val, distance_threshold, "joint")
+            exit_array_joint[i_main] = test_results(euclidean_distance,sampled_array_joint_val, distance_threshold, "Joint")
             if p_value_option
                 p_value_joint_list[i_main,i_rep] = p_extract(sampled_array_joint_val)
             end
@@ -186,7 +186,7 @@ for i_main in 1:length(n_array)
             CPUtic()
             sampled_array_grid_val, n_value_grid_val = sample_sphere_grid(n_main, distance_threshold, euclidean_distance, x->(region_shape_cube(x,cube_values)), cube_values, max_time; approx=false)
             time_array_grid_list[i_main,i_rep] = CPUtoq()
-            exit_array_grid[i_main] = test_results(euclidean_distance,sampled_array_grid_val, distance_threshold, "grid")       
+            exit_array_grid[i_main] = test_results(euclidean_distance,sampled_array_grid_val, distance_threshold, "Grid")       
             if p_value_option
                 p_value_grid_list[i_main,i_rep] = p_extract(sampled_array_grid_val)
             end
@@ -195,7 +195,7 @@ for i_main in 1:length(n_array)
             CPUtic()
             sampled_array_grid_approx_val, n_value_grid_approx_val = sample_sphere_grid(n_main, distance_threshold, euclidean_distance, x->(region_shape_cube(x,cube_values)), cube_values, max_time; approx=true)
             time_array_grid_approx_list[i_main,i_rep] = CPUtoq()
-            exit_array_grid_approx[i_main] = test_results(euclidean_distance,sampled_array_grid_approx_val, distance_threshold, "grid, approx")    
+            exit_array_grid_approx[i_main] = test_results(euclidean_distance,sampled_array_grid_approx_val, distance_threshold, "Grid, approx")    
             if p_value_option
                 p_value_grid_approx_list[i_main,i_rep] = p_extract(sampled_array_grid_approx_val)
             end
@@ -267,44 +267,44 @@ end
 plot()
 ylabel!(L"log_{10}(\mathrm{CPU}\;\mathrm{time})")
 xlabel!(L"log_{10}(\mathrm{N}\;\mathrm{spheres})")
-title!("Filling: f = "*string(filling_ratio)*filling_string)#*", repetitions: "*string(n_repetitions))
+title!("\nFilling: f = "*string(filling_ratio)*filling_string*", repetitions: "*string(n_repetitions))
 (x_start, x_end) = Tuple((log10.(n_array[start_i_plot:end]))[[1;end]])
 #
 if basic_code_option
-    nice_out_print("basic", time_array_basic, time_array_basic_std, time_array_basic_std_log)
+    nice_out_print("Basic", time_array_basic, time_array_basic_std, time_array_basic_std_log)
     fit_basic = fit_log10(time_array_basic, n_array, start_i_fit) 
     println("--- fit_basic = ", fit_basic,"\n")
-    plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_basic[start_i_plot:end]), label="basic", seriestype=:scatter, framestyle = :box, color=:red)
+    plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_basic[start_i_plot:end]), label="Basic", seriestype=:scatter, framestyle = :box, color=:red)
     #
     fit_f(x) = fit_basic[1]+x*fit_basic[2]
     plot!(fit_f  ,x_start,  x_end, framestyle = :box, linestyle=:dash, color=:red, label="")
     #
 end
 if joint_code_option
-    nice_out_print("joint", time_array_joint, time_array_joint_std, time_array_joint_std_log)
+    nice_out_print("Joint", time_array_joint, time_array_joint_std, time_array_joint_std_log)
     fit_joint = fit_log10(time_array_joint, n_array, start_i_fit) 
     println("--- fit_joint = ", fit_joint,"\n")
-    plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_joint[start_i_plot:end]), label="joint", seriestype=:scatter, framestyle = :box, color=:orange)
+    plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_joint[start_i_plot:end]), label="Joint", seriestype=:scatter, framestyle = :box, color=:orange)
     #
     fit_f(x) = fit_joint[1]+x*fit_joint[2]
     plot!(fit_f  ,x_start,  x_end, framestyle = :box, linestyle=:dash, color=:orange, label="")
     #
 end
 if grid_code_option
-    nice_out_print("grid", time_array_grid, time_array_grid_std, time_array_grid_std_log)
+    nice_out_print("Grid", time_array_grid, time_array_grid_std, time_array_grid_std_log)
     fit_grid = fit_log10(time_array_grid, n_array, start_i_fit) 
     println("--- fit_grid = ", fit_grid,"\n")
-    plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_grid[start_i_plot:end]), label="grid", seriestype=:scatter, framestyle = :box, color=:blue)
+    plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_grid[start_i_plot:end]), label="Grid", seriestype=:scatter, framestyle = :box, color=:blue)
     #
     fit_f(x) = fit_grid[1]+x*fit_grid[2]
     plot!(fit_f  ,x_start,  x_end, framestyle = :box, linestyle=:dash, color=:blue, label="")
     #
 end
 if grid_approx_code_option
-    nice_out_print("grid, approx", time_array_grid_approx, time_array_grid_approx_std, time_array_grid_approx_std_log)
+    nice_out_print("Grid, approx", time_array_grid_approx, time_array_grid_approx_std, time_array_grid_approx_std_log)
     fit_grid_approx = fit_log10(time_array_grid_approx, n_array, start_i_fit) 
     println("--- fit_grid_approx = ", fit_grid_approx,"\n")
-    plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_grid_approx[start_i_plot:end]), label="grid, approx", seriestype=:scatter, framestyle = :box, color=:green)
+    plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_grid_approx[start_i_plot:end]), label="Grid, approx", seriestype=:scatter, framestyle = :box, color=:green)
     #
     fit_f(x) = fit_grid_approx[1]+x*fit_grid_approx[2]
     plot!(fit_f  ,x_start,  x_end, framestyle = :box, linestyle=:dash, color=:green, label="")
@@ -324,21 +324,21 @@ if p_value_option
     x_start_here,  x_end_here = counter_func_plot.((x_start,  x_end))
     ylabel!([L"log_{10}(\langle\mathrm{p}_{\mathrm{uniform}}\rangle)";L"\langle\mathrm{p}_{\mathrm{uniform}}\rangle"][plot_type_choice])
     xlabel!([L"log_{10}(\mathrm{N}\;\mathrm{spheres})";L"\mathrm{N}\;\mathrm{spheres}"][plot_type_choice])
-    title!("Filling: f = "*string(filling_ratio)*filling_string)#*", repetitions: "*string(n_repetitions))
+    title!("\nFilling: f = "*string(filling_ratio)*filling_string*", repetitions: "*string(n_repetitions))
     plot!( xx->func_plot(0.05),x_start_here,  x_end_here, framestyle = :box, linestyle=:dash, color=:black, label="<p> = 0.05", ylims=(0,1))
     plot!( xx->func_plot(0.5),x_start_here,  x_end_here, framestyle = :box,   color=:black, label="<p> = 0.5", ylims=(0,1))
     #
     if basic_code_option
-        plot!( func_plot.(n_array[start_i_plot:end]),  func_plot.(p_value_basic_mean[start_i_plot:end]), label="basic", seriestype=:scatter, framestyle = :box, color=:red)
+        plot!( func_plot.(n_array[start_i_plot:end]),  func_plot.(p_value_basic_mean[start_i_plot:end]), label="Basic", seriestype=:scatter, framestyle = :box, color=:red)
     end
     if joint_code_option
-        plot!( func_plot.(n_array[start_i_plot:end]),  func_plot.(p_value_joint_mean[start_i_plot:end]), label="joint", seriestype=:scatter, framestyle = :box, color=:orange)
+        plot!( func_plot.(n_array[start_i_plot:end]),  func_plot.(p_value_joint_mean[start_i_plot:end]), label="Joint", seriestype=:scatter, framestyle = :box, color=:orange)
     end
     if grid_code_option
-        plot!( func_plot.(n_array[start_i_plot:end]),  func_plot.(p_value_grid_mean[start_i_plot:end]), label="grid", seriestype=:scatter, framestyle = :box, color=:blue)
+        plot!( func_plot.(n_array[start_i_plot:end]),  func_plot.(p_value_grid_mean[start_i_plot:end]), label="Grid", seriestype=:scatter, framestyle = :box, color=:blue)
     end
     if grid_approx_code_option
-        plot!( func_plot.(n_array[start_i_plot:end]),  func_plot.(p_value_grid_approx_mean[start_i_plot:end]), label="grid, approx", seriestype=:scatter, framestyle = :box, color=:green)
+        plot!( func_plot.(n_array[start_i_plot:end]),  func_plot.(p_value_grid_approx_mean[start_i_plot:end]), label="Grid, approx", seriestype=:scatter, framestyle = :box, color=:green)
     end
 end
 #
