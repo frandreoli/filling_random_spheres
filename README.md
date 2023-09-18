@@ -25,7 +25,7 @@ Here below we show the scaling results when fixing $f=0.4f\_{\text{max}}$. We te
 - **_Grid_** algorithm: $\langle T \rangle \sim N ^{1.8}$.
 - **_Grid, approximated_** algorithm: $\langle T \rangle \sim N ^{1.5}$.
 
-For the case of $N=1000$, this means that the average time spent by the **_basic_** algorithm is around $\sim 11$ times larger than the time taken by the **_grid, approximated_** algorithm.
+For the case of $N=1000$, this means that the average time spent by the **_basic_** algorithm is around $\sim 11$ times longer than the time taken by the **_grid, approximated_** algorithm.
 
 ___
 
