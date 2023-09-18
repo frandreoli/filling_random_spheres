@@ -8,9 +8,9 @@ end
 #
 function uniform_box(n_value, x_length,y_length,z_length)
     r_atoms = Array{Float64}(undef,n_value,3)
-    r_atoms[:,1] = (rand(n_value).-0.5).*x_length
-    r_atoms[:,2] = (rand(n_value).-0.5).*y_length
-    r_atoms[:,3] = (rand(n_value).-0.5).*z_length
+    r_atoms[:,1] = (rand(n_value) ).*x_length
+    r_atoms[:,2] = (rand(n_value) ).*y_length
+    r_atoms[:,3] = (rand(n_value) ).*z_length
     return r_atoms
 end
 #

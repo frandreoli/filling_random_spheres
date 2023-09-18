@@ -1,6 +1,6 @@
 #
 using Plots
-using CurveFit, Statistics, CPUTime, LaTeXStrings
+using CurveFit, Statistics, CPUTime, LaTeXStrings, Distributions, HypothesisTests
 include("Functions.jl")
 ENV["GKSwstype"]="nul"
 #
@@ -18,13 +18,14 @@ filling_ratio = 0.4
 n_array = ceil.(Int, 10.0.^[ 1.7;1.8; 1.9 ; 2; 2.1 ; 2.2; 2.3;2.4;2.5 ;2.6;2.7;2.8;2.9])
 #
 n_repetitions = 2#15000
-max_time = 40
+max_time = 60
 #
 const sphere_filling_option   = [true ; false][1]
 const code_test_option        = [true ; false][1]
+const p_value_option          = [true ; false][1] 
 # 
 const basic_code_option       = [true ; false][1]
-const joint_code_option       = [true ; false][2]
+const joint_code_option       = [true ; false][1]
 const grid_code_option        = [true ; false][1]
 const grid_approx_code_option = [true ; false][1]
 #
@@ -79,6 +80,15 @@ function fit_log10(time_array, n_array, start_i_fit)
     return fit_val
 end
 #
+function p_extract(full_array, distr_func=Uniform())
+    dimensions = length(full_array[1,:])
+    p_value = 0
+    for i in 1:dimensions
+        p_value += pvalue(ExactOneSampleKSTest(full_array[:,i] ,distr_func))
+    end
+    return p_value/dimensions
+end
+#
 #
 #Initializing arrays
 if basic_code_option
@@ -87,6 +97,8 @@ if basic_code_option
     time_array_basic_std = zeros(n_length)
     time_array_basic_std_log = zeros(n_length)
     time_array_basic_list = zeros(n_length,n_repetitions)
+    p_value_basic_list = zeros(n_length,n_repetitions)
+    p_value_basic_mean = zeros(n_length)
     @time sample_sphere_basic(n_array[1], distance_array[1], euclidean_distance , uniform_box, cube_values, 5, false, true)
 end
 #
@@ -96,6 +108,8 @@ if joint_code_option
     time_array_joint_std = zeros(n_length)
     time_array_joint_std_log = zeros(n_length)
     time_array_joint_list = zeros(n_length,n_repetitions)
+    p_value_joint_list = zeros(n_length,n_repetitions)
+    p_value_joint_mean = zeros(n_length)
     @time sample_sphere_joint(n_array[1], distance_array[1], euclidean_distance , uniform_box, cube_values, 5, false, true)
 end
 #
@@ -105,6 +119,8 @@ if grid_code_option
     time_array_grid_std = zeros(n_length)
     time_array_grid_std_log = zeros(n_length)
     time_array_grid_list = zeros(n_length,n_repetitions)
+    p_value_grid_list = zeros(n_length,n_repetitions)
+    p_value_grid_mean = zeros(n_length)
     @time sample_sphere_grid(n_array[1], distance_array[1], euclidean_distance, x->(region_shape_cube(x,cube_values)), cube_values,5, false, true ; approx=true, approx_eff = true)
 end
 #
@@ -114,6 +130,8 @@ if grid_code_option
     time_array_grid_approx_std = zeros(n_length)
     time_array_grid_approx_std_log = zeros(n_length)
     time_array_grid_approx_list = zeros(n_length,n_repetitions)
+    p_value_grid_approx_list = zeros(n_length,n_repetitions)
+    p_value_grid_approx_mean = zeros(n_length)
     @time sample_sphere_grid(n_array[1], distance_array[1], euclidean_distance, x->(region_shape_cube(x,cube_values)), cube_values,5, false, true ; approx=false, approx_eff = false)
 end
 #
@@ -146,29 +164,41 @@ for i_main in 1:length(n_array)
         end
         #
         #Computing the codes & timing them
-        if joint_code_option
-            CPUtic()
-            sampled_array_joint_val, n_value_joint_val = sample_sphere_joint(n_main, distance_threshold, euclidean_distance , uniform_box, (x_length,y_length,z_length), max_time)
-            time_array_joint_list[i_main,i_rep] = CPUtoq()
-            exit_array_joint[i_main] = test_results(euclidean_distance,sampled_array_joint_val, distance_threshold, "joint")
-        end
         if basic_code_option
             CPUtic()
             sampled_array_basic_val, n_value_basic_val = sample_sphere_basic(n_main, distance_threshold, euclidean_distance , uniform_box, (x_length,y_length,z_length), max_time)
             time_array_basic_list[i_main,i_rep] = CPUtoq()
             exit_array_basic[i_main] = test_results(euclidean_distance,sampled_array_basic_val, distance_threshold, "basic")
+            if p_value_option
+                p_value_basic_list[i_main,i_rep] = p_extract(sampled_array_basic_val)
+            end
+        end
+        if joint_code_option
+            CPUtic()
+            sampled_array_joint_val, n_value_joint_val = sample_sphere_joint(n_main, distance_threshold, euclidean_distance , uniform_box, (x_length,y_length,z_length), max_time)
+            time_array_joint_list[i_main,i_rep] = CPUtoq()
+            exit_array_joint[i_main] = test_results(euclidean_distance,sampled_array_joint_val, distance_threshold, "joint")
+            if p_value_option
+                p_value_joint_list[i_main,i_rep] = p_extract(sampled_array_joint_val)
+            end
         end
         if grid_code_option
             CPUtic()
             sampled_array_grid_val, n_value_grid_val = sample_sphere_grid(n_main, distance_threshold, euclidean_distance, x->(region_shape_cube(x,cube_values)), cube_values, max_time; approx=false)
             time_array_grid_list[i_main,i_rep] = CPUtoq()
-            exit_array_grid[i_main] = test_results(euclidean_distance,sampled_array_grid_val, distance_threshold, "grid")                
+            exit_array_grid[i_main] = test_results(euclidean_distance,sampled_array_grid_val, distance_threshold, "grid")       
+            if p_value_option
+                p_value_grid_list[i_main,i_rep] = p_extract(sampled_array_grid_val)
+            end
         end
         if grid_approx_code_option
             CPUtic()
             sampled_array_grid_approx_val, n_value_grid_approx_val = sample_sphere_grid(n_main, distance_threshold, euclidean_distance, x->(region_shape_cube(x,cube_values)), cube_values, max_time; approx=true)
             time_array_grid_approx_list[i_main,i_rep] = CPUtoq()
             exit_array_grid_approx[i_main] = test_results(euclidean_distance,sampled_array_grid_approx_val, distance_threshold, "grid, approx")    
+            if p_value_option
+                p_value_grid_approx_list[i_main,i_rep] = p_extract(sampled_array_grid_approx_val)
+            end
         end
         #
         #
@@ -176,25 +206,37 @@ for i_main in 1:length(n_array)
     #
     #
     #Saving the data
-    if joint_code_option
-        time_array_joint[i_main] = mean(time_array_joint_list[i_main,:])
-        time_array_joint_std[i_main] = std(time_array_joint_list[i_main,:])
-        time_array_joint_std_log[i_main] = std(log.(time_array_joint_list[i_main,:]))
-    end
     if basic_code_option
         time_array_basic[i_main]= mean(time_array_basic_list[i_main,:])
         time_array_basic_std[i_main]= std(time_array_basic_list[i_main,:])
         time_array_basic_std_log[i_main]= std(log.(time_array_basic_list[i_main,:]))
+        if p_value_option
+            p_value_basic_mean[i_main] = mean(p_value_basic_list[i_main,:])
+        end
+    end
+    if joint_code_option
+        time_array_joint[i_main] = mean(time_array_joint_list[i_main,:])
+        time_array_joint_std[i_main] = std(time_array_joint_list[i_main,:])
+        time_array_joint_std_log[i_main] = std(log.(time_array_joint_list[i_main,:]))
+        if p_value_option
+            p_value_joint_mean[i_main] = mean(p_value_joint_list[i_main,:])
+        end
     end
     if grid_code_option   
         time_array_grid[i_main]= mean(time_array_grid_list[i_main,:])    
         time_array_grid_std[i_main]= std(time_array_grid_list[i_main,:])
         time_array_grid_std_log[i_main]= std(log.(time_array_grid_list[i_main,:]))
+        if p_value_option
+            p_value_grid_mean[i_main] = mean(p_value_grid_list[i_main,:])
+        end
     end
     if grid_approx_code_option  
         time_array_grid_approx[i_main]= mean(time_array_grid_approx_list[i_main,:])    
         time_array_grid_approx_std[i_main]= std(time_array_grid_approx_list[i_main,:])
         time_array_grid_approx_std_log[i_main]= std(log.(time_array_grid_approx_list[i_main,:]))
+        if p_value_option
+            p_value_grid_approx_mean[i_main] = mean(p_value_grid_approx_list[i_main,:])
+        end
     end
     #
     #
@@ -226,18 +268,8 @@ plot()
 ylabel!(L"log_{10}(\mathrm{CPU}\;\mathrm{time})")
 xlabel!(L"log_{10}(\mathrm{N}\;\mathrm{spheres})")
 title!("Filling: f = "*string(filling_ratio)*filling_string)#*", repetitions: "*string(n_repetitions))
+(x_start, x_end) = Tuple((log10.(n_array[start_i_plot:end]))[[1;end]])
 #
-if joint_code_option
-    nice_out_print("joint", time_array_joint, time_array_joint_std, time_array_joint_std_log)
-    fit_joint = fit_log10(time_array_joint, n_array, start_i_fit) 
-    println("--- fit_joint = ", fit_joint,"\n")
-    plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_joint[start_i_plot:end]), label="joint", seriestype=:scatter, framestyle = :box, color=:black)
-    #
-    fit_f(x) = fit_joint[1]+x*fit_joint[2]
-    (x_start, x_end)= Tuple((log10.(n_array[start_i_plot:end]))[[1;end]])
-    plot!(fit_f  ,x_start,  x_end, framestyle = :box, linestyle=:dash, color=:black, label="")
-    #
-end
 if basic_code_option
     nice_out_print("basic", time_array_basic, time_array_basic_std, time_array_basic_std_log)
     fit_basic = fit_log10(time_array_basic, n_array, start_i_fit) 
@@ -245,8 +277,17 @@ if basic_code_option
     plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_basic[start_i_plot:end]), label="basic", seriestype=:scatter, framestyle = :box, color=:red)
     #
     fit_f(x) = fit_basic[1]+x*fit_basic[2]
-    (x_start, x_end)= Tuple((log10.(n_array[start_i_plot:end]))[[1;end]])
     plot!(fit_f  ,x_start,  x_end, framestyle = :box, linestyle=:dash, color=:red, label="")
+    #
+end
+if joint_code_option
+    nice_out_print("joint", time_array_joint, time_array_joint_std, time_array_joint_std_log)
+    fit_joint = fit_log10(time_array_joint, n_array, start_i_fit) 
+    println("--- fit_joint = ", fit_joint,"\n")
+    plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_joint[start_i_plot:end]), label="joint", seriestype=:scatter, framestyle = :box, color=:orange)
+    #
+    fit_f(x) = fit_joint[1]+x*fit_joint[2]
+    plot!(fit_f  ,x_start,  x_end, framestyle = :box, linestyle=:dash, color=:orange, label="")
     #
 end
 if grid_code_option
@@ -256,7 +297,6 @@ if grid_code_option
     plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_grid[start_i_plot:end]), label="grid", seriestype=:scatter, framestyle = :box, color=:blue)
     #
     fit_f(x) = fit_grid[1]+x*fit_grid[2]
-    (x_start, x_end)= Tuple((log10.(n_array[start_i_plot:end]))[[1;end]])
     plot!(fit_f  ,x_start,  x_end, framestyle = :box, linestyle=:dash, color=:blue, label="")
     #
 end
@@ -267,12 +307,41 @@ if grid_approx_code_option
     plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_grid_approx[start_i_plot:end]), label="grid, approx", seriestype=:scatter, framestyle = :box, color=:green)
     #
     fit_f(x) = fit_grid_approx[1]+x*fit_grid_approx[2]
-    (x_start, x_end)= Tuple((log10.(n_array[start_i_plot:end]))[[1;end]])
     plot!(fit_f  ,x_start,  x_end, framestyle = :box, linestyle=:dash, color=:green, label="")
     #
 end
 #
 #
 mkpath("Data")
-png("Data/fill"*string(filling_ratio)*"_rep"*string(n_repetitions)*"_"*args_checked[1]*"_"*args_checked[2]*".png")
+png("Data/TIME_fill"*string(filling_ratio)*"_reps"*string(n_repetitions)*"_"*args_checked[1]*"_"*args_checked[2]*".png")
+plot!()
+#
+if p_value_option
+    plot()
+    plot_type_choice = 2#1, 2
+    func_plot = [log10; x->x][plot_type_choice]
+    counter_func_plot = [x->x ; x->10^x][plot_type_choice]
+    x_start_here,  x_end_here = counter_func_plot.((x_start,  x_end))
+    ylabel!([L"log_{10}(\langle\mathrm{p}_{\mathrm{uniform}}\rangle)";L"\langle\mathrm{p}_{\mathrm{uniform}}\rangle"][plot_type_choice])
+    xlabel!([L"log_{10}(\mathrm{N}\;\mathrm{spheres})";L"\mathrm{N}\;\mathrm{spheres}"][plot_type_choice])
+    title!("Filling: f = "*string(filling_ratio)*filling_string)#*", repetitions: "*string(n_repetitions))
+    plot!( xx->func_plot(0.05),x_start_here,  x_end_here, framestyle = :box, linestyle=:dash, color=:black, label="<p> = 0.05", ylims=(0,1))
+    plot!( xx->func_plot(0.5),x_start_here,  x_end_here, framestyle = :box,   color=:black, label="<p> = 0.5", ylims=(0,1))
+    #
+    if basic_code_option
+        plot!( func_plot.(n_array[start_i_plot:end]),  func_plot.(p_value_basic_mean[start_i_plot:end]), label="basic", seriestype=:scatter, framestyle = :box, color=:red)
+    end
+    if joint_code_option
+        plot!( func_plot.(n_array[start_i_plot:end]),  func_plot.(p_value_joint_mean[start_i_plot:end]), label="joint", seriestype=:scatter, framestyle = :box, color=:orange)
+    end
+    if grid_code_option
+        plot!( func_plot.(n_array[start_i_plot:end]),  func_plot.(p_value_grid_mean[start_i_plot:end]), label="grid", seriestype=:scatter, framestyle = :box, color=:blue)
+    end
+    if grid_approx_code_option
+        plot!( func_plot.(n_array[start_i_plot:end]),  func_plot.(p_value_grid_approx_mean[start_i_plot:end]), label="grid, approx", seriestype=:scatter, framestyle = :box, color=:green)
+    end
+end
+#
+#
+png("Data/P_VALUE_fill"*string(filling_ratio)*"_reps"*string(n_repetitions)*"_"*args_checked[1]*"_"*args_checked[2]*".png")
 plot!()
