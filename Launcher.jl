@@ -71,7 +71,7 @@ function nice_out_print(name_print, time_array, time_array_std, time_array_std_l
     to_add_string = " "^length(name_print)
     println(name_print*" code times: ", dig_round.(time_array))
     println(to_add_string*"         +/- ", dig_round.(time_array_std))
-    println(to_add_string*"   (log) +/- ", dig_round.(time_array_std_log),"\n")
+    println(to_add_string*"   (log) +/- ", dig_round.(time_array_std_log))
 end
 function fit_log10(time_array, n_array, start_i_fit)
     pure_index = (x->time_array[x]!=0.0&&x>=start_i_fit).(1:length(n_array))
@@ -214,7 +214,7 @@ start_i_fit = 2
 start_i_plot = 2
 #
 println("\nEvaluation concluded in ", time()-time_start," seconds.\n")
-println("N values: ", n_array, ", repetitions: ",n_repetitions,", filling: ", filling_ratio)
+println("N values: ", n_array, ", repetitions: ",n_repetitions,", filling: ", filling_ratio,"\n")
 #
 plot()
 ylabel!(L"log_{10}(\mathrm{CPU}\;\mathrm{time})")
@@ -224,7 +224,7 @@ title!("Filling ratio: "*string(filling_ratio)*", repetitions: "*string(n_repeti
 if joint_code_option
     nice_out_print("joint", time_array_joint, time_array_joint_std, time_array_joint_std_log)
     fit_joint = fit_log10(time_array_joint, n_array, start_i_fit) 
-    println("--- fit_joint = ", fit_joint)
+    println("--- fit_joint = ", fit_joint,"\n")
     plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_joint[start_i_plot:end]), label="joint", seriestype=:scatter, framestyle = :box, color=:black)
     #
     fit_f(x) = fit_joint[1]+x*fit_joint[2]
@@ -235,7 +235,7 @@ end
 if basic_code_option
     nice_out_print("basic", time_array_basic, time_array_basic_std, time_array_basic_std_log)
     fit_basic = fit_log10(time_array_basic, n_array, start_i_fit) 
-    println("--- fit_basic = ", fit_basic)
+    println("--- fit_basic = ", fit_basic,"\n")
     plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_basic[start_i_plot:end]), label="basic", seriestype=:scatter, framestyle = :box, color=:red)
     #
     fit_f(x) = fit_basic[1]+x*fit_basic[2]
@@ -246,7 +246,7 @@ end
 if grid_code_option
     nice_out_print("grid", time_array_grid, time_array_grid_std, time_array_grid_std_log)
     fit_grid = fit_log10(time_array_grid, n_array, start_i_fit) 
-    println("--- fit_grid = ", fit_grid)
+    println("--- fit_grid = ", fit_grid,"\n")
     plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_grid[start_i_plot:end]), label="grid", seriestype=:scatter, framestyle = :box, color=:blue)
     #
     fit_f(x) = fit_grid[1]+x*fit_grid[2]
@@ -257,7 +257,7 @@ end
 if grid_approx_code_option
     nice_out_print("grid, approx", time_array_grid_approx, time_array_grid_approx_std, time_array_grid_approx_std_log)
     fit_grid_approx = fit_log10(time_array_grid_approx, n_array, start_i_fit) 
-    println("--- fit_grid_approx = ", fit_grid_approx)
+    println("--- fit_grid_approx = ", fit_grid_approx,"\n")
     plot!( log10.(n_array[start_i_plot:end]),  log10.(time_array_grid_approx[start_i_plot:end]), label="grid, approx", seriestype=:scatter, framestyle = :box, color=:green)
     #
     fit_f(x) = fit_grid_approx[1]+x*fit_grid_approx[2]
