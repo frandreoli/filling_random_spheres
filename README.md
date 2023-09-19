@@ -30,9 +30,8 @@ For the case of $N=1000$, this means that the average time spent by the **_basic
 ___
 
 <p align="center">
- <img width="500" height="333" src="https://github.com/frandreoli/filling_random_spheres/assets/37184096/0564de99-f088-4812-a71e-0d8a2b57e1fd">
+ <img width="500" height="333" src="https://github.com/frandreoli/filling_random_spheres/assets/37184096/d41b2714-805a-47a9-b68e-75282993daa3">
 </p>
-
 
 
 # Kolmorogov-Smirnov tests
@@ -45,7 +44,7 @@ To estimate this, we perform a Kolmogorov-Smirnov test, using the Julia package 
 ___
 
 <p align="center">
- <img width="500" height="333" src="https://github.com/frandreoli/filling_random_spheres/assets/37184096/c53dda9e-fa69-40bc-9fd3-f38ee0900e66">
+ <img width="500" height="333" src="https://github.com/frandreoli/filling_random_spheres/assets/37184096/26cf5ef6-8db6-47fa-8390-34c57ef901f2">
 </p>
 
 
