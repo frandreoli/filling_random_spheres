@@ -41,6 +41,8 @@ As a further test, we quantify how uniformly distributed the resulting points ar
 
 To estimate this, we perform a Kolmogorov-Smirnov test, using the Julia package [HypothesisTests](https://juliastats.org/HypothesisTests.jl/stable/), to check the null hypothesis that the final sampled points come from the uniform distribution, against the alternative hypothesis that the sample is not drawn from such distribution. In the figure below, we show the $p$ values (averaged over the three dimensions and the various repetitions) corresponding to the three algorithms, for the data of the previous example. In all cases, the values are well above the usual confidence threshold of $p=0.05$, with no noticeable difference between the approximated and the exact methods.
 
+The expected value for an idea, uniform distribution would be $\langle p\rangle =0.5$, which differs from what we find, expecially for low number of points $N$. This can be probably related to the correlations mentioned above. Specifically, the point distribution at the boundaries will differ from the distribution in the bulk since the points within a distance of $2R$ from the finite boundaries will experience the influence of points over a lower solid angle than those in the bulk. Rounghly, one can expect that this behaviour is stronger the higher is $R/L$, which explains why, for a fixed filling fractions $f$, the discrepancy $\langle p\rangle \neq 0.5$ is higher for lower values of $N$.
+
 ___
 
 <p align="center">
