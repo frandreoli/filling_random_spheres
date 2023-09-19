@@ -1,5 +1,5 @@
 # Introduction
-In this repository, a grid-based algorithm is developed to uniformly sample hard (non-overlapping) spheres inside a cuboid. Although fully tested only for cuboid shapes, the code is designed to be potentially extendable to arbitrary shapes of the enclosing volume and dimensions. 
+In this repository, a grid-based algorithm is developed to uniformly sample hard (non-overlapping) spheres inside a cuboid. Although fully tested only for cuboid shapes, the code is designed to be potentially **extendable to arbitrary shapes of the enclosing volume and dimensions**. 
 
 Hereafter, we suppose that the hard spheres are $N$ have radius $R$, and that we are working in $D$ dimensions (the code was fully tested for $D\leq 3$ dimensions). The chosen metric is euclidian, i.e. $|\mathbf{r}\_i-\mathbf{r}\_j|=\sqrt{ \sum\_{x=1,\dots, D} (r\_j^x-r\_j^x)^2}$. 
 
@@ -19,29 +19,34 @@ $$f= \dfrac{ V\_{\text{spheres}}N}{ V\_{\text{tot}}} =   \dfrac{ 4\pi R ^3 }{ 3 
 
 According to the Kepler conjecture (see [Sphere Packing Problem](https://mathworld.wolfram.com/SpherePacking.html)), the maximum packing density in 3D is $f\_{\text{max}} = \pi/(3\sqrt{2})\simeq 0.74$. 
 
-Here below we show the scaling results when fixing $f=0.4f\_{\text{max}}$. We tested the CPU time spent on the code by averaging over $\sim 20000$ repetitions, and spanning values of $10\lesssim N \lesssim 1000$. We found the empirical scalings:
+Here below we show the scaling results when fixing $f=0.4f\_{\text{max}}$. We tested the CPU time spent on the code by averaging over $\sim 3000$ repetitions, and spanning values of $10\lesssim N \lesssim 1000$. We found the empirical scalings:
 
 - **_Basic_** algorithm: $\langle T \rangle \sim N ^{2.3}$.
 - **_Grid_** algorithm: $\langle T \rangle \sim N ^{1.8}$.
 - **_Grid, approximated_** algorithm: $\langle T \rangle \sim N ^{1.5}$.
 
+For the case of $N=1000$, this means that the average time spent by the **_basic_** algorithm is around $\sim 2$ times longer than the time taken by the **_grid_** algorithm and $\sim 11$ times longer compared to the **_grid, approximated_** algorithm.
+
 ___
 
 <p align="center">
- <img width="500" height="333" src="https://github.com/frandreoli/filling_random_spheres/assets/37184096/0564de99-f088-4812-a71e-0d8a2b57e1fd">
+ <img width="500" height="333" src="https://github.com/frandreoli/filling_random_spheres/assets/37184096/d41b2714-805a-47a9-b68e-75282993daa3">
 </p>
 
 
-
 # Kolmorogov-Smirnov tests
-From the data of the previous example, we checked that all the accepted points correctly satisfied the condition $|\mathbf{r}\_j-\mathbf{r}\_i|\geq 2R$ in all the three algorithms. As a further test, we quantified how uniformly distributed the resulting points were. To this aim, one should take into account that the constraint on the mutual distance can introduce a strong correlations between the point, whose distribution then might significantly different from the uniform distribution. Nonetheless, we wanted to verify that the three algorithms returned consistent results with respect to each other. This is particularly interesting for the **_grid, approximated_** algorithm, to check if the intrinsic approximation produces some distinguishable differences in the outcome. 
+From the data of the previous example, we first check that all the accepted points correctly satisfied the condition $|\mathbf{r}\_j-\mathbf{r}\_i|\geq 2R$ in all the three algorithms. 
 
-To estimate this, we perform a Kolmogorov-Smirnov test via the Julia package [HypothesisTests](https://juliastats.org/HypothesisTests.jl/stable/), to check the null hypothesis that the final sampled points come from the uniform distribution, against the alternative hypothesis that the sample is not drawn from such distribution. In the figure below, we show the $p$ values (averaged over the three dimensions and the various repetitions) corresponding to the three algorithms, for the data of the previous example. In all cases, the values are well above the usual confidence threshold of $p=0.05$, with no noticeable difference between the approximated and the exact methods.
+As a further test, we quantify how uniformly distributed the resulting points are. To this aim, one should take into account that the constraint on the mutual distance can introduce a strong correlations between the point, whose distribution might thus significantly different from the uniform distribution. Nonetheless, we aim to verify that the three algorithms return consistent results with respect to each other. This is particularly interesting for the **_grid, approximated_** algorithm, to check if the intrinsic approximation produces some distinguishable differences in the outcome. 
+
+To estimate this, we perform a Kolmogorov-Smirnov test, using the Julia package [HypothesisTests](https://juliastats.org/HypothesisTests.jl/stable/), to check the null hypothesis that the final sampled points come from the uniform distribution, against the alternative hypothesis that the sample is not drawn from such distribution. In the figure below, we show the $p$ values (averaged over the three dimensions and the various repetitions) corresponding to the three algorithms, for the data of the previous example. In all cases, the values are well above the usual confidence threshold of $p=0.05$, with no noticeable difference between the approximated and the exact methods.
+
+The expected value for ideal samples drawn from a uniform distribution would be $\langle p\rangle =0.5$, which differs from what we find for low number of points $N$. This can be related to the correlations mentioned above. Specifically, the distribution of points at the boundaries will differ from the distribution in the bulk, since those points within a distance of $2R$ from the finite boundaries will experience the influence of less points, compared to those in the bulk. Roughly, one can expect that this behaviour is stronger when $R/L$ is higher, which explains why, for a fixed filling fractions $f$, the discrepancy $\langle p\rangle \neq 0.5$ is more evident when $N$ is smaller.
 
 ___
 
 <p align="center">
- <img width="500" height="333" src="https://github.com/frandreoli/filling_random_spheres/assets/37184096/c53dda9e-fa69-40bc-9fd3-f38ee0900e66">
+ <img width="500" height="333" src="https://github.com/frandreoli/filling_random_spheres/assets/37184096/26cf5ef6-8db6-47fa-8390-34c57ef901f2">
 </p>
 
 
