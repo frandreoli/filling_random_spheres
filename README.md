@@ -19,7 +19,7 @@ $$f= \dfrac{ V\_{\text{spheres}}N}{ V\_{\text{tot}}} =   \dfrac{ 4\pi R ^3 }{ 3 
 
 According to the Kepler conjecture (see [Sphere Packing Problem](https://mathworld.wolfram.com/SpherePacking.html)), the maximum packing density in 3D is $f\_{\text{max}} = \pi/(3\sqrt{2})\simeq 0.74$. 
 
-Here below we show the scaling results when fixing $f=0.4f\_{\text{max}}$. We tested the CPU time spent on the code by averaging over $\sim 20000$ repetitions, and spanning values of $10\lesssim N \lesssim 1000$. We found the empirical scalings:
+Here below we show the scaling results when fixing $f=0.4f\_{\text{max}}$. We tested the CPU time spent on the code by averaging over $\sim 3000$ repetitions, and spanning values of $10\lesssim N \lesssim 1000$. We found the empirical scalings:
 
 - **_Basic_** algorithm: $\langle T \rangle \sim N ^{2.3}$.
 - **_Grid_** algorithm: $\langle T \rangle \sim N ^{1.8}$.
