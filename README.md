@@ -1,5 +1,5 @@
 # Introduction
-In this repository, a grid-based algorithm is developed to uniformly sample hard (non-overlapping) spheres inside a cuboid. Although fully tested only for cuboid shapes, the code is designed to be potentially **extendable to arbitrary shapes of the enclosing volume and dimensions**. 
+In this repository, a grid-based algorithm is developed to uniformly sample the positions of hard (non-overlapping) spheres inside a cuboid. Although fully tested only for cuboid shapes, the code is designed to be potentially **extendable to arbitrary shapes of the enclosing volume and dimensions**. 
 
 Hereafter, we suppose that the hard spheres are $N$ have radius $R$, and that we are working in $D$ dimensions (the code was fully tested for $D\leq 3$ dimensions). The chosen metric is euclidian, i.e. $|\mathbf{r}\_i-\mathbf{r}\_j|=\sqrt{ \sum\_{x=1,\dots, D} (r\_j^x-r\_j^x)^2}$. 
 
@@ -37,7 +37,7 @@ ___
 # Kolmorogov-Smirnov tests
 From the data of the previous example, we first check that all the accepted points correctly satisfied the condition $|\mathbf{r}\_j-\mathbf{r}\_i|\geq 2R$ in all the three algorithms. 
 
-As a further test, we quantify how uniformly distributed the resulting points are. To this aim, one should take into account that the constraint on the mutual distance can introduce a strong correlations between the point, whose distribution might thus significantly different from the uniform distribution. Nonetheless, we aim to verify that the three algorithms return consistent results with respect to each other. This is particularly interesting for the **_grid, approximated_** algorithm, to check if the intrinsic approximation produces some distinguishable differences in the outcome. 
+As a further test, we quantify how uniformly distributed the resulting points are. To this aim, one should take into account that the constraint on the mutual distance can introduce strong correlations between the points, whose distribution might thus significantly different from the uniform distribution. Nonetheless, we aim to verify that the three algorithms return consistent results with respect to each other. This is particularly interesting for the **_grid, approximated_** algorithm, to check if the intrinsic approximation produces some distinguishable differences in the outcome. 
 
 To estimate this, we perform a Kolmogorov-Smirnov test, using the Julia package [HypothesisTests](https://juliastats.org/HypothesisTests.jl/stable/), to check the null hypothesis that the final sampled points come from the uniform distribution, against the alternative hypothesis that the sample is not drawn from such distribution. In the figure below, we show the $p$ values (averaged over the three dimensions and the various repetitions) corresponding to the three algorithms, for the data of the previous example. In all cases, the values are well above the usual confidence threshold of $p=0.05$, with no noticeable difference between the approximated and the exact methods.
 
@@ -48,6 +48,5 @@ ___
 <p align="center">
  <img width="500" height="333" src="https://github.com/frandreoli/filling_random_spheres/assets/37184096/26cf5ef6-8db6-47fa-8390-34c57ef901f2">
 </p>
-
 
 
