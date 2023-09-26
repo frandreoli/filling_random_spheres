@@ -22,87 +22,8 @@ end
 #
 #
 #
-############################### Joint algorithm definitions ########################################
-#
-#
-function sample_sphere_joint(n_start, distance_threshold, distance_function , sampling_function, sampling_options, time_threshold=60, print_option=false, check_option=false)
-    #
-    function println_if(string...)
-        print_option ? println(string...) : nothing
-    end
-    #
-    println_if("Starting evaluation core.")
-    #
-    n_value = n_start
-    sampled_array = sampling_function(n_start, sampling_options...)
-    #
-    time_start=time()
-    #
-    #
-    remain  = n_value
-    i_old   = 0
-    i_subs = n_value
-    time_condition = true
-    #
-    while remain>0 && time_condition
-        i_subs = n_value 
-        #
-        for i in 1:i_subs
-            #
-            start_point = max(i,i_old)
-            #
-            for j in (start_point + 1):i_subs
-                while distance_function(sampled_array[i,:]-sampled_array[j,:])<distance_threshold && j<=i_subs            
-                    array_replace!(sampled_array,j,i_subs)
-                    i_subs-=1
-                end
-            end
-        end
-        #
-        remaining_i = (i_subs+1):n_value
-        sampled_array[remaining_i,:] = sampling_function(length(remaining_i), sampling_options...)
-        remain = length(remaining_i)
-        #
-        println_if("Values remaining to sample: ",remain,".\nPoints already sampled: ",i_subs,".\nComputation_valuel time: ",time()-time_start)
-        #
-        i_old = i_subs
-        #
-        time_condition = (time()-time_start)<=time_threshold
-        #
-        if !time_condition
-            @warn "Exceeded computation_value time (joint). Number of points correctly sampled: "*string(i_subs)
-            n_value=i_subs
-            sampled_array = sampled_array[1:n_value,:]
-        end
-        #
-    end
-    #
-    core_computation_time=(time()-time_start)
-    #
-    if check_option
-        remain=0
-        println_if("Starting consistency check.")
-        for i = 1:n_value
-            for j = i + 1:n_value #i<j<=n_value
-                if euclidean_distance(sampled_array[i,:]-sampled_array[j,:])<distance_threshold
-                    remain=remain+1
-                end
-            end
-        end
-        if remain!=0
-            @warn "Code failure. Number of exceptions: "*string(remain)
-        end
-    end
-    #
-    println_if("Number of exceptions: ",remain)
-    println_if("Computation correctly completed.\nCore evaluation computation_valuel time: ", core_computation_time,"\nOverall computation_valuel time: ", time()-time_start)
-    #
-    return sampled_array, n_value 
-end
-#
-#
-#
-############################### Single algorithm definitions ########################################
+############################### Basic algorithm definitions ########################################
+########## This represents the most basic algorithm that can be used to solve the problem ##########
 #
 #
 function sample_sphere_basic(n_start, distance_threshold, distance_function , sampling_function, sampling_options, time_threshold=60, print_option=false, check_option=false)
@@ -160,7 +81,8 @@ end
 #
 #
 #
-############################### Smart algorithm definitions ########################################
+############################### Grid algorithm definitions ########################################
+###### A grid-based algorithm exhibiting an improved time-scaling with the number of spheres ######
 #
 #
 function region_shape_cube(vec, sizes)
@@ -215,7 +137,6 @@ function sample_sphere_grid(n_start, distance_threshold, distance_function, regi
     end
     #
     neighbour_list = collect(Iterators.product([neigh_order for i in 1:dimensions]... ))[2:end]
-
     #
     #Construct small cubes where only one point is allowed to be
     dim_points = (x->ceil(Int, x/small_cube_size)).(enclosing_cube)
@@ -299,3 +220,82 @@ function sample_sphere_grid(n_start, distance_threshold, distance_function, regi
 end
 #
 #
+#
+############################### Joint algorithm definitions ########################################
+##### The following algorithm doesn't show any improvement with respect to the basic algorithm #####
+#
+#
+function sample_sphere_joint(n_start, distance_threshold, distance_function , sampling_function, sampling_options, time_threshold=60, print_option=false, check_option=false)
+    #
+    function println_if(string...)
+        print_option ? println(string...) : nothing
+    end
+    #
+    println_if("Starting evaluation core.")
+    #
+    n_value = n_start
+    sampled_array = sampling_function(n_start, sampling_options...)
+    #
+    time_start=time()
+    #
+    #
+    remain  = n_value
+    i_old   = 0
+    i_subs = n_value
+    time_condition = true
+    #
+    while remain>0 && time_condition
+        i_subs = n_value 
+        #
+        for i in 1:i_subs
+            #
+            start_point = max(i,i_old)
+            #
+            for j in (start_point + 1):i_subs
+                while distance_function(sampled_array[i,:]-sampled_array[j,:])<distance_threshold && j<=i_subs            
+                    array_replace!(sampled_array,j,i_subs)
+                    i_subs-=1
+                end
+            end
+        end
+        #
+        remaining_i = (i_subs+1):n_value
+        sampled_array[remaining_i,:] = sampling_function(length(remaining_i), sampling_options...)
+        remain = length(remaining_i)
+        #
+        println_if("Values remaining to sample: ",remain,".\nPoints already sampled: ",i_subs,".\nComputation_valuel time: ",time()-time_start)
+        #
+        i_old = i_subs
+        #
+        time_condition = (time()-time_start)<=time_threshold
+        #
+        if !time_condition
+            @warn "Exceeded computation_value time (joint). Number of points correctly sampled: "*string(i_subs)
+            n_value=i_subs
+            sampled_array = sampled_array[1:n_value,:]
+        end
+        #
+    end
+    #
+    core_computation_time=(time()-time_start)
+    #
+    if check_option
+        remain=0
+        println_if("Starting consistency check.")
+        for i = 1:n_value
+            for j = i + 1:n_value #i<j<=n_value
+                if euclidean_distance(sampled_array[i,:]-sampled_array[j,:])<distance_threshold
+                    remain=remain+1
+                end
+            end
+        end
+        if remain!=0
+            @warn "Code failure. Number of exceptions: "*string(remain)
+        end
+    end
+    #
+    println_if("Number of exceptions: ",remain)
+    println_if("Computation correctly completed.\nCore evaluation computation_valuel time: ", core_computation_time,"\nOverall computation_valuel time: ", time()-time_start)
+    #
+    return sampled_array, n_value 
+end
