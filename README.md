@@ -1,5 +1,5 @@
 # Introduction
-In this repository, a grid-based algorithm is developed to uniformly sample hard (non-overlapping) spheres inside a cuboid. Although fully tested only for cuboid shapes, the code is designed to be potentially **extendable to arbitrary shapes of the enclosing volume and dimensions**. 
+In this repository, a grid-based algorithm is developed to uniformly sample the positions of hard (non-overlapping) spheres inside a cuboid. Although fully tested only for cuboid shapes, the code is designed to be potentially **extendable to arbitrary shapes of the enclosing volume and dimensions**. 
 
 Hereafter, we suppose that the hard spheres are $N$ have radius $R$, and that we are working in $D$ dimensions (the code was fully tested for $D\leq 3$ dimensions). The chosen metric is euclidian, i.e. $|\mathbf{r}\_i-\mathbf{r}\_j|=\sqrt{ \sum\_{x=1,\dots, D} (r\_j^x-r\_j^x)^2}$. 
 
